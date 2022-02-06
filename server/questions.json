@@ -1,0 +1,17 @@
+{
+    "participant": {
+        "questions": [
+            {
+                "name": "first-name",
+                "label": "First Name:",
+                "required": "true"
+            },
+
+            {
+                "name": "last-name",
+                "label": "Last Name:",
+                "required": "true"
+            }
+        ]
+    }
+}
