@@ -9,10 +9,11 @@ export function isApplied(id) {
 export async function getQuestions(type) {
     try {
         if (type === "participants") {
-            const questionsObject = await axios.get('localhost:500/questions/participant');
+            const questionsObject = await axios.get('questions/participant');
+            console.log(questionsObject);
             return questionsObject.questions;
         }
-    }
+    } 
     catch {
         return "Error";
     }

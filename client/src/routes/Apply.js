@@ -1,7 +1,7 @@
 import React from "react";
 import logo from "../Finalicon2.png";
 import Question from "../components/Question"
-import { getQuestions } from "../utils.js"
+import axios from 'axios';
 
 class Apply extends React.Component {
   constructor(props) {
@@ -11,7 +11,8 @@ class Apply extends React.Component {
 
   async componentDidMount() {
     try {
-      const participantQuestions = await getQuestions("participant");
+      const participantQuestions = await (await axios.get('questions/participant')).data.questions;
+      console.log(participantQuestions);
       this.setState({questions: participantQuestions});
     }
     catch(error) {
@@ -32,7 +33,7 @@ class Apply extends React.Component {
           <hr></hr>
         </div>
 
-        <div className="container w-md-50">
+        <div className="container w-75">
           <form>
             {questionComponents}
             <button type="submit" class="btn robotech-bg">Submit</button>
