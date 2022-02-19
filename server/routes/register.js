@@ -1,8 +1,6 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 var router = express.Router();
-router.use(express.json());
-
 const db = require('../db');
 
 //need to implement other routes here

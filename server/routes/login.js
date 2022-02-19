@@ -2,10 +2,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 var router = express.Router();
-router.use(express.json());
-
 const db = require('../db');
-
 
 router.post('/', async (req, res) => {
     const email = req.body.email;
