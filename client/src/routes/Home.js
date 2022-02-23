@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import InfoCard from '../components/InfoCard';
 import Nav from '../components/Nav';
 import logo from '../Finalicon2.png';
+import {AuthContext} from '../context/AuthContext.js';
 
 function getCardText(applied) {
   if (applied) {
@@ -27,6 +28,13 @@ function Home() {
       <Nav />
 
       <InfoCard cardTitle={getCardTitle(false)} cardText={getCardText(false)} />
+
+      <AuthContext.Consumer>
+        {({logout}) => (
+          <button type="submit" className="btn robotech-bg" onClick={logout}>Logout</button>
+        )}
+      </AuthContext.Consumer>
+      
     </div>
   );
 }

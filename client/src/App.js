@@ -1,19 +1,48 @@
-import logo from './Finalicon2.png';
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-import { Link } from "react-router-dom";
+import {Routes, Route, Navigate} from "react-router-dom";
+import Home from './routes/Home.js';
+import Apply from './routes/Apply.js';
+import Login from './routes/Login.js';
+import { AuthProvider, AuthContext } from './context/AuthContext';
+
+function RequireAuth({children}) {
+  return <AuthContext.Consumer>
+    {({authed}) => {
+      console.log(authed);
+      if (!authed) {
+        return <Navigate to="/login" replace />
+      } else {
+        return children;
+      }
+    }}
+  </AuthContext.Consumer>
+}
 
 function App() {
-  return (
-    <div className="App container">
-      <img src={logo} className="img-fluid col-2"></img>
-      <h1 className="pt-2 robotech-color">My Robotech</h1>
-      <hr></hr>
+    return (
+      <AuthProvider>
+        <Routes> 
+          <Route path="/" element={
+            <RequireAuth>
+              <Home />
+            </RequireAuth>} />
 
-      <Link to="/login" class="btn btn-success robotech-bg">Log In</Link>
-    </div>
-  );
+          <Route path="/home" element={
+            <RequireAuth>
+              <Home /> 
+            </RequireAuth>} />
+
+          <Route path="/apply" element={
+            <RequireAuth>
+              <Apply /> 
+            </RequireAuth>} />
+
+          <Route path="/login" element={<Login />} />
+        </Routes>
+      </AuthProvider>
+    )
 }
 
 export default App;

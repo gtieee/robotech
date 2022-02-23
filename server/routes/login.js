@@ -16,22 +16,26 @@ router.post('/', async (req, res) => {
 
     try {
         userData = await db.query("SELECT * FROM data.users WHERE email = $1", [email]);
+        if (!userData.rows[0].pass) {
+            res.status(401).json({token: null, user: null, message: 'Incorrect login information'});
+        }    
     } catch (err) {
         console.log(err);
-        res.status(400).json({token: null, user: null});
+        res.status(401).json({token: null, user: null});
+        return;
     }
 
-    if (!userData) {
-        res.status(400).json({token: null, user: null, message: 'Incorrect login information'});
-    }
-    
-    bcrypt.compare(pass, userData.rows[0].pass, (err, result) => {
+    await bcrypt.compare(pass, userData.rows[0].pass, (err, result) => {
         try {
-            const responseToken = jwt.sign({user_id: email}, process.env.TOKEN_KEY, {expiresIn: '2h'});
-            res.status(200).json({token: responseToken, user: email, message: 'Logged in'});
+            if (result) {
+                const responseToken = jwt.sign({user_id: email}, process.env.TOKEN_KEY, {expiresIn: '2h'});
+                res.status(200).json({token: responseToken, user: email, message: 'Logged in'});
+            } else {
+                res.status(401).json({token: null, user: null, message: 'Incorrect login information'});
+            }
         } catch (err) {
             console.log(err);
-            res.status(400).json({token: null, user: null, message: 'Incorrect login information'});
+            res.status(401).json({token: null, user: null, message: 'Incorrect login information'});
         }
     })
 
