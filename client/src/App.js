@@ -5,12 +5,15 @@ import {Routes, Route, Navigate} from "react-router-dom";
 import Home from './routes/Home.js';
 import Apply from './routes/Apply.js';
 import Login from './routes/Login.js';
+import axios from 'axios';
 import { AuthProvider, AuthContext } from './context/AuthContext';
 
 function RequireAuth({children}) {
   return <AuthContext.Consumer>
-    {({authed}) => {
-      console.log(authed);
+    {({authed, isAuthed}) => {
+      if (!authed) {
+        isAuthed();
+      }
       if (!authed) {
         return <Navigate to="/login" replace />
       } else {

@@ -38,7 +38,7 @@ class LoginForm extends React.Component {
                  </div>
                  <div>
                     <label className="form-label">Password</label>
-                    <input className="form-control mb-2" type="text" name="pass" id="passForm" value={this.state.passVal} onChange={this.handleChange}/>
+                    <input className="form-control mb-2" type="password" name="pass" id="passForm" value={this.state.passVal} onChange={this.handleChange}/>
                  </div>
                  <button type="submit" className="btn robotech-bg">Submit</button>
                  {this.context.authed && <Navigate to="/home" replace />}

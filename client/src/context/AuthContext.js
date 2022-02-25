@@ -5,13 +5,33 @@ export const AuthContext = React.createContext({
     user: null,
     authed: false,
     login: () => {},
-    logout: () => {}
+    logout: () => {},
+    isAuthed: () => {}
 })
 
 export class AuthProvider extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {user: null, authed: false, login: () => {}};
+        this.state = {user: null, authed: false, login: () => {}, isAuthed: () => {}, logout: () => {},
+            isAuthed: async () => {
+                const currToken = localStorage.getItem('token');
+                const currUser = localStorage.getItem('user');
+                if (!currToken) {
+                    this.setState({user: null, authed: false});
+                } else {
+                    try {
+                        const response = await axios.get('/users/checkAuth', {headers: {authorization: currToken}});
+                        if (response.data.authed) {
+                            this.setState({user: currUser, authed: true});
+                        } else {
+                            this.setState({user: null, authed: false});
+                        }
+                    } catch (err) {
+                        this.setState({user: null, authed: false});
+                    }
+                }
+            }     
+        };
         this.login = this.login.bind(this);
         this.logout = this.logout.bind(this);
     }
@@ -24,6 +44,8 @@ export class AuthProvider extends React.Component {
         } else {
             this.setState({user: response.data.user, authed: true});
             localStorage.setItem('token', response.data.token);
+            localStorage.setItem('user', response.data.user);
+            localStorage.setItem('id', response.data.id);
             return true;
         }
     }
@@ -31,6 +53,8 @@ export class AuthProvider extends React.Component {
     logout() {
         this.setState({user: null, authed: false});
         localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        localStorage.removeItem('id');
     }
 
     componentDidMount() {

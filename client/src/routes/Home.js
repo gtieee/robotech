@@ -27,16 +27,15 @@ function Home() {
 
       <Nav />
 
-      <InfoCard cardTitle={getCardTitle(false)} cardText={getCardText(false)} />
+      <InfoCard cardTitle={getCardTitle(false)} cardText={getCardText(false)} /> 
+    </div>
+  );
 
-      <AuthContext.Consumer>
+   /*<AuthContext.Consumer>
         {({logout}) => (
           <button type="submit" className="btn robotech-bg" onClick={logout}>Logout</button>
         )}
-      </AuthContext.Consumer>
-      
-    </div>
-  );
+      </AuthContext.Consumer>*/
 }
 
 export default Home;

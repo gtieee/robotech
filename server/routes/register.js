@@ -3,10 +3,6 @@ const bcrypt = require('bcrypt');
 var router = express.Router();
 const db = require('../db');
 
-//need to implement other routes here
-
-//this will likely need to be changed to send data in a more palatable format
-//also will need to be authenticated
 router.post('/new', async (req, res) => {
     email = req.body.email;
     pass = req.body.pass;
@@ -17,9 +13,18 @@ router.post('/new', async (req, res) => {
         res.status(400).send("All data must be sent to this endpoint");
     }
 
+    try {
+        const duplicate = await db.query("SELECT * FROM users WHERE email = $1", [email]);
+        if (duplicate.rows) {
+            res.status(202).json({result: 'User already exists'});
+            return;
+        }
+    } catch (err) {
+        console.log(err);
+    }
     bcrypt.hash(pass, 10, async (err, hash) => {
         try {
-            await db.query("INSERT INTO data.users (first_name, last_name, email, pass) VALUES ($1, $2, $3, $4)", [
+            await db.query("INSERT INTO users (first_name, last_name, email, pass) VALUES ($1, $2, $3, $4)", [
                 first, last, email, hash])
                 res.status(201).send('User created');
         } catch (err) {
@@ -30,7 +35,7 @@ router.post('/new', async (req, res) => {
 })
 
 router.get('/users', async (req, res) => {
-    const data = await db.query("SELECT * FROM data.users;");
+    const data = await db.query("SELECT * FROM users;");
     res.send(data.rows);
 })
 
