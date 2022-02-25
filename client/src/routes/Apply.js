@@ -6,22 +6,26 @@ import axios from 'axios';
 class Apply extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {first: '', last: '', age: '', school: '', other: '', diet: false, restrictions: '', design: false, mech: false, elec: false, soft: false, skills: '', interest: '', info: false};
+    this.state = {first: '', last: '', age: '', school: '', other: '', diet: false, restrictions: '', design: false, mech: false, elec: false, soft: false, skills: '', interest: '', info: false, error: false};
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  /*
+  
   async componentDidMount() {
     try {
-      const participantQuestions = (await axios.post('http://localhost:500/questions/participant', {token: localStorage.getItem('token')})).data.questions;
-      console.log(participantQuestions);
-      this.setState({questions: participantQuestions});
+      const response = await axios.post('http://localhost:500/users/hasInfo', {token: localStorage.getItem('token'), userId: localStorage.getItem('id')
+    });
+      console.log(response.data);
+      if (response.data.hasInfo) {
+        this.setState({info: true});
+      }
     }
     catch(error) {
       console.log(error);
+      this.setState({error: true})
     }
-  }*/
+  }
 
   handleChange(event) {
     switch(event.target.name) {
@@ -96,16 +100,20 @@ class Apply extends React.Component {
       questionComponents = this.state.questions.map((entry) => 
          <Question questionText={entry.label} key={entry.name}/>
       )} */
-    
 
     return (
       <div>
+
         <div className="App container">
           <img src={logo} className="img-fluid col-2"></img>
           <h1 className="pt-2 robotech-color">RoboTech Application</h1>
           <hr></hr>
         </div>
 
+        {this.state.error && 
+        <h4>Failed to communicate with server, please try again later!</h4>}
+
+        {!this.state.error && !this.state.info &&
         <div className="container w-75">
           <form>
             <label className="form-label">First Name</label>
@@ -180,7 +188,7 @@ class Apply extends React.Component {
             <textarea className="form-control mb-2" rows="3" name="skills" value={this.state.skills} onChange={this.handleChange} required/>
             <button type="submit" class="btn robotech-bg my-3" onClick={this.handleSubmit} >Submit</button>
           </form>
-        </div>
+        </div>}
       </div>
     )
   }
