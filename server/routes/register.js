@@ -15,8 +15,8 @@ router.post('/new', async (req, res) => {
 
     try {
         const duplicate = await db.query("SELECT * FROM users WHERE email = $1", [email]);
-        if (duplicate.rows) {
-            res.status(202).json({result: 'User already exists'});
+        if (duplicate.rows[0]) {
+            res.status(202).json({result: false});
             return;
         }
     } catch (err) {
@@ -26,7 +26,7 @@ router.post('/new', async (req, res) => {
         try {
             await db.query("INSERT INTO users (first_name, last_name, email, pass) VALUES ($1, $2, $3, $4)", [
                 first, last, email, hash])
-                res.status(201).send('User created');
+                res.status(201).json({result: true});
         } catch (err) {
             console.log(err);
             res.status(400).send('Failed to create user');

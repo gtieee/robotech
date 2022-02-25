@@ -3,7 +3,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import InfoCard from '../components/InfoCard';
 import Nav from '../components/Nav';
 import logo from '../Finalicon2.png';
-import {AuthContext} from '../context/AuthContext.js';
+import { useState } from 'react';
+import axios from 'axios';
 
 function getCardText(applied) {
   if (applied) {
@@ -19,6 +20,21 @@ function getCardTitle(applied) {
 }
 
 function Home() {
+  var [applied, setApplied] = useState(false);
+
+  let hasApplied = async () => {
+    try {
+      const response = await axios.post('http://localhost:500/users/hasInfo', {token: localStorage.getItem('token'), userId: localStorage.getItem('id')});
+      if (response.data.hasInfo) {
+        setApplied(true);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  hasApplied();
+
   return (
     <div className="App container">
       <img src={logo} className="img-fluid col-2"></img>
@@ -27,7 +43,7 @@ function Home() {
 
       <Nav />
 
-      <InfoCard cardTitle={getCardTitle(false)} cardText={getCardText(false)} /> 
+    <InfoCard cardTitle={getCardTitle(applied)} cardText={getCardText(applied)} linkTo={!applied && 'Apply'} linkRoute='/apply' /> 
     </div>
   );
 

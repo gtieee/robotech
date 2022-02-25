@@ -5,6 +5,8 @@ import {Routes, Route, Navigate} from "react-router-dom";
 import Home from './routes/Home.js';
 import Apply from './routes/Apply.js';
 import Login from './routes/Login.js';
+import Register from './routes/Register.js';
+import Coming from './routes/Coming.js';
 import axios from 'axios';
 import { AuthProvider, AuthContext } from './context/AuthContext';
 
@@ -42,7 +44,19 @@ function App() {
               <Apply /> 
             </RequireAuth>} />
 
+          <Route path="/team" element={
+            <RequireAuth>
+              <Coming /> 
+            </RequireAuth>} />
+
+          <Route path="/events" element={
+            <RequireAuth>
+              <Coming /> 
+            </RequireAuth>} />
+
           <Route path="/login" element={<Login />} />
+
+          <Route path="/register" element={<Register />} />
         </Routes>
       </AuthProvider>
     )
