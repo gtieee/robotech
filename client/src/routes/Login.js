@@ -1,6 +1,6 @@
 import React from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 import logo from '../Finalicon2.png';
 
 class LoginForm extends React.Component {
@@ -53,6 +53,7 @@ class LoginForm extends React.Component {
                     <button type="submit" className="btn robotech-bg">Submit</button>
                     {this.context.authed && <Navigate to="/home" replace />}
                 </form>
+                <Link to='/register' className="btn btn-success robotech-bg mt-3">Register</Link>
             </div>
         )
     }

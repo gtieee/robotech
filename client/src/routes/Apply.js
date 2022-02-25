@@ -1,6 +1,7 @@
 import React from "react";
 import logo from "../Finalicon2.png";
-import Question from "../components/Question"
+import Question from "../components/Question";
+import InfoCard from '../components/InfoCard';
 import axios from 'axios';
 
 class Apply extends React.Component {
@@ -14,9 +15,7 @@ class Apply extends React.Component {
   
   async componentDidMount() {
     try {
-      const response = await axios.post('http://localhost:500/users/hasInfo', {token: localStorage.getItem('token'), userId: localStorage.getItem('id')
-    });
-      console.log(response.data);
+      const response = await axios.post('http://localhost:500/users/hasInfo', {token: localStorage.getItem('token'), userId: localStorage.getItem('id')});
       if (response.data.hasInfo) {
         this.setState({info: true});
       }
@@ -189,6 +188,12 @@ class Apply extends React.Component {
             <button type="submit" class="btn robotech-bg my-3" onClick={this.handleSubmit} >Submit</button>
           </form>
         </div>}
+
+        {!this.state.error && this.state.info &&
+          <div className="container App">
+            <InfoCard cardTitle='Thank You!' cardText='Thank you submitting your application! Please be patient as we make our admissions decisions.' linkTo='Home' linkRoute='/home' /> 
+          </div>
+        }
       </div>
     )
   }
