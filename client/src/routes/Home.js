@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import InfoCard from '../components/InfoCard';
 import Nav from '../components/Nav';
 import logo from '../Finalicon2.png';
+import { AuthContext } from '../context/AuthContext';
 import { useState } from 'react';
 import axios from 'axios';
 
@@ -44,14 +45,18 @@ function Home() {
       <Nav />
 
     <InfoCard cardTitle={getCardTitle(applied)} cardText={getCardText(applied)} linkTo={!applied && 'Apply'} linkRoute='/apply' /> 
+
+    <AuthContext.Consumer>
+        {({logout}) => (
+          <button type="submit" className="btn robotech-bg mt-3" onClick={logout}>Logout</button>
+        )}
+    </AuthContext.Consumer>
+
     </div>
+
+    
   );
 
-   /*<AuthContext.Consumer>
-        {({logout}) => (
-          <button type="submit" className="btn robotech-bg" onClick={logout}>Logout</button>
-        )}
-      </AuthContext.Consumer>*/
 }
 
 export default Home;

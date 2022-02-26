@@ -22,6 +22,8 @@ router.post('/hasInfo', auth, async (req, res) => {
         const userRow = await db.query('SELECT * FROM users WHERE id = $1;', [req.body.userId]);
         if (userRow.rows[0].apply_id) {
             res.status(200).json({hasInfo: true});
+        } else {
+            res.status(200).json({hasInfo: false});
         }
     } catch (err) {
         console.log(err);
