@@ -15,7 +15,7 @@ class Apply extends React.Component {
   
   async componentDidMount() {
     try {
-      const response = await axios.post('http://localhost:500/users/hasInfo', {token: localStorage.getItem('token'), userId: localStorage.getItem('id')});
+      const response = await axios.post('/users/hasInfo', {token: localStorage.getItem('token'), userId: localStorage.getItem('id')});
       if (response.data.hasInfo) {
         this.setState({info: true});
       }

@@ -24,7 +24,7 @@ function Home() {
 
   let hasApplied = async () => {
     try {
-      const response = await axios.post('http://localhost:500/users/hasInfo', {token: localStorage.getItem('token'), userId: localStorage.getItem('id')});
+      const response = await axios.post('/users/hasInfo', {token: localStorage.getItem('token'), userId: localStorage.getItem('id')});
       if (response.data.hasInfo) {
         setApplied(true);
       }
