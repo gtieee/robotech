@@ -5,10 +5,10 @@ const login = require('./login.js');
 const apply = require('./apply.js');
 
 module.exports = app => {
-    app.use('/register', register);
-    app.use('/login', login);
-    app.use('/questions', questions);
-    app.use('/users', users);
-    app.use('/apply', apply);
+    app.use('/api/register', register);
+    app.use('/api/login', login);
+    app.use('/api/questions', questions);
+    app.use('/api/users', users);
+    app.use('/api/apply', apply);
     //include other routes here
 }

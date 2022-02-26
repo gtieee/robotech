@@ -20,7 +20,7 @@ export class AuthProvider extends React.Component {
                     this.setState({user: null, authed: false});
                 } else {
                     try {
-                        const response = await axios.get('/users/checkAuth', {headers: {authorization: currToken}});
+                        const response = await axios.get('/api/users/checkAuth', {headers: {authorization: currToken}});
                         if (response.data.authed) {
                             this.setState({user: currUser, authed: true});
                         } else {
@@ -37,7 +37,7 @@ export class AuthProvider extends React.Component {
     }
 
     async login(user, password) {
-        const response = await axios.post('/login', {email: user, pass: password});
+        const response = await axios.post('/api/login', {email: user, pass: password});
         if (response.data.token == null) {
             this.setState({user: null, authed: false});
             return false

@@ -15,7 +15,7 @@ class Apply extends React.Component {
   
   async componentDidMount() {
     try {
-      const response = await axios.post('/users/hasInfo', {token: localStorage.getItem('token'), userId: localStorage.getItem('id')});
+      const response = await axios.post('/api/users/hasInfo', {token: localStorage.getItem('token'), userId: localStorage.getItem('id')});
       if (response.data.hasInfo) {
         this.setState({info: true});
       }
@@ -82,7 +82,7 @@ class Apply extends React.Component {
         const userInfo = {token: localStorage.getItem('token'), userId: localStorage.getItem('id')};
         const data = {...this.state, ...userInfo};
         try {
-          await axios.post('/apply/info', data);
+          await axios.post('/api/apply/info', data);
           this.setState({info: true});
         } catch {
           alert('Failed to submit application, please try again later!');

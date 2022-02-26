@@ -26,6 +26,7 @@ class LoginForm extends React.Component {
         try {
             if (!(this.state.emailVal && this.state.passVal)) {
                 alert('Please enter all fields!');
+                return;
             }
             await this.context.login(this.state.emailVal, this.state.passVal);
         } catch {

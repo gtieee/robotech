@@ -50,7 +50,7 @@ class Register extends React.Component {
                 alert('Passwords do not match!');
             }
             else {
-                const register = await axios.post('/register/new', this.state);
+                const register = await axios.post('/api/register/new', this.state);
                 if (!register.data.result) {
                     alert('An account is already associated with this email');
                 }
