@@ -4,7 +4,7 @@ import InfoCard from '../components/InfoCard';
 import Nav from '../components/Nav';
 import logo from '../Finalicon2.png';
 import { AuthContext } from '../context/AuthContext';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 
 function getCardText(applied) {
@@ -20,7 +20,7 @@ function getCardTitle(applied) {
   return applied ? "Thank you!" : "Apply Now!";
 }
 
-function Home() {
+function Old() {
   var [applied, setApplied] = useState(false);
 
   let hasApplied = async () => {
@@ -57,6 +57,29 @@ function Home() {
     
   );
 
+}
+
+class Home extends React.Component {
+  static contextType = AuthContext;
+
+  async componentDidMount() {
+    if (!this.context.applied) {
+      this.context.hasApplied();
+    }
+  }
+
+  render() {
+    return (
+      <div className="App container">
+        <img src={logo} className="img-fluid col-2"></img>
+        <h1 className="pt-2 robotech-color">My Robotech</h1>
+        <hr></hr>
+        <Nav />
+        <InfoCard cardTitle={getCardTitle(this.context.applied)} cardText={getCardText(this.context.applied)} linkTo={!this.context.applied && 'Apply'} linkRoute='/apply' /> 
+        <button type="submit" className="btn robotech-bg mt-3" onClick={this.context.logout}>Logout</button>
+      </div>
+    )
+  }
 }
 
 export default Home;
