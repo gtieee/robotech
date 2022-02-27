@@ -2,7 +2,7 @@ import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import InfoCard from '../components/InfoCard';
 import Nav from '../components/Nav';
-import logo from '../Finalicon2.png';
+import logo from '../FinalLogo.png';
 import { useState } from 'react';
 import axios from 'axios';
 

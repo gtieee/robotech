@@ -1,9 +1,10 @@
 import React from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 import validator from 'validator';
-import logo from '../Finalicon2.png';
 import axios from 'axios';
+import logo from '../FinalLogo.png';
+import NavBar from '../components/NavBar';
 
 class Register extends React.Component {
     constructor(props) {
@@ -65,38 +66,48 @@ class Register extends React.Component {
 
     render() {
         return (
-            <div className="container mt-5 w-75-m h-100 align-items-center" >
-                <div className="App container">
-                    <img src={logo} className="img-fluid col-2"></img>
-                    <h1 className="pt-2 robotech-color">Register</h1>
-                    <hr></hr>
+            <div>
+                <NavBar/>
+                <div className="app-container container mt-5 w-75-m h-100 align-items-center" >
+                    <div className = "row">
+                        <div className="col-xs-12 col-md-6">
+                            <h1 className="pt-2 robotech-color">REGISTER</h1>
+                            <form onSubmit={this.handleSubmit}>
+                                <label className="form-label">Name</label>
+                                <div className="row mb-2">
+                                    <div className='col'>
+                                        <input type='text' name='first' placeholder="First Name" className="form-rt form-control" value={this.state.first} onChange={this.handleChange}/>
+                                    </div>
+                                    <div className='col'>
+                                        <input type='text' name='last' placeholder="Last Name" className="form-rt form-control" value={this.state.last} onChange={this.handleChange}/>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="form-label">Email</label>
+                                    <input className="form-rt form-control mb-2" type="text" name="email" placeholder="Email" value={this.state.email} onChange={this.handleChange}/>
+                                </div>
+                                <div>
+                                    <label className="form-label">Password</label>
+                                    <input className="form-rt form-control mb-2" type="password" name="pass" placeholder="Password" value={this.state.pass} onChange={this.handleChange}/>
+                                </div>
+                                <div>
+                                    <label className="form-label">Confirm Password</label>
+                                    <input className="form-rt form-control mb-2" type="password" name="confirm" placeholder="Password" value={this.state.confirm} onChange={this.handleChange}/>
+                                </div>
+                                <p className="p-rt">
+                                    Already Registered ? <Link to='/login' className="link">Login</Link>
+                                </p>
+                                <button type="submit" className="button-rt btn robotech-bg">REGISTER</button>
+                                {this.context.authed && <Navigate to="/home" replace />}
+                            </form>
+                        </div>
+                        <div className="col-xs-12 col-md-6 App">
+                            <img src={logo} className="floating img-fluid col-2"></img>
+                        </div>
+                    </div>
                 </div>
-                <form onSubmit={this.handleSubmit}>
-                    <label className="form-label">Name</label>
-                    <div className="row mb-2">
-                        <div className='col'>
-                            <input type='text' name='first' placeholder="First Name" className="form-control" value={this.state.first} onChange={this.handleChange}/>
-                        </div>
-                        <div className='col'>
-                            <input type='text' name='last' placeholder="Last Name" className="form-control" value={this.state.last} onChange={this.handleChange}/>
-                        </div>
-                    </div>
-                    <div>
-                        <label className="form-label">Email</label>
-                        <input className="form-control mb-2" type="text" name="email" placeholder="Email" value={this.state.email} onChange={this.handleChange}/>
-                    </div>
-                    <div>
-                        <label className="form-label">Password</label>
-                        <input className="form-control mb-2" type="password" name="pass" placeholder="Password" value={this.state.pass} onChange={this.handleChange}/>
-                    </div>
-                    <div>
-                        <label className="form-label">Confirm Password</label>
-                        <input className="form-control mb-2" type="password" name="confirm" placeholder="Password" value={this.state.confirm} onChange={this.handleChange}/>
-                    </div>
-                    <button type="submit" className="btn robotech-bg">Submit</button>
-                    {this.context.authed && <Navigate to="/home" replace />}
-                </form>
             </div>
+            
         )
     }
 }

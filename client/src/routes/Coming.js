@@ -1,5 +1,5 @@
 import InfoCard from '../components/InfoCard';
-import logo from '../Finalicon2.png';
+import logo from '../FinalLogo.png';
 
 function Coming() {
     return (
