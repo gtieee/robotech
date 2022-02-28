@@ -1,6 +1,6 @@
 import InfoCard from '../components/InfoCard';
+import logo from '../FinalLogo.png';
 import Nav from '../components/Nav';
-import logo from '../Finalicon2.png';
 
 function Coming() {
     return (

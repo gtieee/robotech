@@ -1,7 +1,8 @@
 import React from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { Navigate, Link } from 'react-router-dom';
-import logo from '../Finalicon2.png';
+import logo from '../FinalLogo.png';
+import NavBar from '../components/NavBar';
 
 class LoginForm extends React.Component {
     constructor(props) {
@@ -36,25 +37,34 @@ class LoginForm extends React.Component {
 
     render() {
         return (
-            <div className="container mt-5 w-75-m h-100 align-items-center" >
-                <div className="App container">
-                    <img src={logo} className="img-fluid col-2"></img>
-                    <h1 className="pt-2 robotech-color">Log In</h1>
-                    <hr></hr>
+            <div>
+            <NavBar/>
+            <div className="app-container container mt-5 w-75-m h-100 align-items-center" >
+                <div className = "row">
+                    <div className="col-xs-12 col-md-6">
+                        <h1 className="pt-2 robotech-color">LOG IN</h1>
+
+                        <form onSubmit={this.handleSubmit}>
+                            <div>
+                                <label className="form-label">Email</label>
+                                <input className="form-rt form-control mb-2" type="text" name="email" id="emailForm" placeholder="Enter Username" value={this.state.emailVal} onChange={this.handleChange}/>
+                            </div>
+                            <div>
+                                <label className="form-label">Password</label>
+                                <input className="form-rt form-control mb-2" type="password" name="pass" id="passForm" placeholder="Enter Password" value={this.state.passVal} onChange={this.handleChange}/>
+                            </div>
+                        <p className="p-rt">
+                            No Account ? <Link to='/register' className="link">Register</Link>
+                        </p>
+                        <button type="submit" className="button-rt btn robotech-bg">LOGIN</button>
+                            {this.context.authed && <Navigate to="/home" replace />}
+                        </form>
+                    </div>
+                    <div className="col-xs-12 col-md-6 App">
+                        <img src={logo} className="floating img-fluid col-2"></img>
+                    </div>
                 </div>
-                <form onSubmit={this.handleSubmit}>
-                    <div>
-                        <label className="form-label">Email</label>
-                        <input className="form-control mb-2" type="text" name="email" id="emailForm" value={this.state.emailVal} onChange={this.handleChange}/>
-                    </div>
-                    <div>
-                        <label className="form-label">Password</label>
-                        <input className="form-control mb-2" type="password" name="pass" id="passForm" value={this.state.passVal} onChange={this.handleChange}/>
-                    </div>
-                    <button type="submit" className="btn robotech-bg">Submit</button>
-                    {this.context.authed && <Navigate to="/home" replace />}
-                </form>
-                <Link to='/register' className="btn btn-success robotech-bg mt-3">Register</Link>
+            </div>
             </div>
         )
     }
