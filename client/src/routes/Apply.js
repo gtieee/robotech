@@ -3,26 +3,21 @@ import logo from '../FinalLogo.png';
 import Question from "../components/Question";
 import InfoCard from '../components/InfoCard';
 import axios from 'axios';
+import { AuthContext } from "../context/AuthContext";
 
 class Apply extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {first: '', last: '', age: '', school: '', other: '', diet: false, restrictions: '', design: false, mech: false, elec: false, soft: false, skills: '', interest: '', info: false, error: false};
+    this.state = {first: '', last: '', age: '', school: '', other: '', diet: false, restrictions: '', design: false, mech: false, elec: false, soft: false, skills: '', interest: '', mlh: false, error: false};
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  
+  static contextType = AuthContext;
+
   async componentDidMount() {
-    try {
-      const response = await axios.post('/api/users/hasInfo', {token: localStorage.getItem('token'), userId: localStorage.getItem('id')});
-      if (response.data.hasInfo) {
-        this.setState({info: true});
-      }
-    }
-    catch(error) {
-      console.log(error);
-      this.setState({error: true})
+    if (!this.context.applied) {
+      this.context.hasApplied();
     }
   }
 
@@ -70,12 +65,15 @@ class Apply extends React.Component {
       case 'skills':
         this.setState({skills: event.target.value})
         break;
+      case 'mlh':
+        this.setState(currState => ({mlh: !currState.mlh}));
+        break;
     }
   }
 
   async handleSubmit(event) {
     event.preventDefault();
-    if (!(this.state.first && this.state.last && this.state.age && this.state.school && this.state.skills 
+    if (!(this.state.first && this.state.last && this.state.age && this.state.school && this.state.skills && this.state.mlh 
       && this.state.interest && (this.state.design || this.state.mech || this.state.elec || this.state.soft))) {
       alert("Please complete all fields!");
     } else {
@@ -101,18 +99,16 @@ class Apply extends React.Component {
       )} */
 
     return (
-      <div>
-
+      <div className="container">
         <div className="App container">
           <img src={logo} className="img-fluid col-2"></img>
           <h1 className="pt-2 robotech-color">RoboTech Application</h1>
           <hr></hr>
         </div>
-
         {this.state.error && 
         <h4>Failed to communicate with server, please try again later!</h4>}
 
-        {!this.state.error && !this.state.info &&
+        {!this.state.error && !this.context.applied &&
         <div className="container w-75">
           <form>
             <label className="form-label">First Name</label>
@@ -184,12 +180,18 @@ class Apply extends React.Component {
               </label>
             </div>
             <label className="form-label mt-2">{'What skills do you have in these areas?'}</label>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" value="" name="mlh" checked={this.state.mlh} onChange={this.handleChange}/>
+              <label class="form-check-label mb-2">
+                I agree to the <a href="https://static.mlh.io/docs/mlh-code-of-conduct.pdf">MLH Code of Conduct</a>
+              </label>
+            </div>
             <textarea className="form-control mb-2" rows="3" name="skills" value={this.state.skills} onChange={this.handleChange} required/>
             <button type="submit" class="btn robotech-bg my-3" onClick={this.handleSubmit} >Submit</button>
           </form>
         </div>}
 
-        {!this.state.error && this.state.info &&
+        {!this.state.error && this.context.applied &&
           <div className="container App">
             <InfoCard cardTitle='Thank You!' cardText='Thank you submitting your application! Please be patient as we make our admissions decisions.' linkTo='Home' linkRoute='/home' /> 
           </div>

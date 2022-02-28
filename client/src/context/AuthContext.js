@@ -4,15 +4,17 @@ import axios from 'axios';
 export const AuthContext = React.createContext({
     user: null,
     authed: false,
+    applied: false,
     login: () => {},
     logout: () => {},
-    isAuthed: () => {}
+    isAuthed: () => {},
+    hasApplied: () => {}
 })
 
 export class AuthProvider extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {user: null, authed: false, login: () => {}, isAuthed: () => {}, logout: () => {},
+        this.state = {user: null, authed: false, applied: false, login: () => {}, isAuthed: () => {}, logout: () => {},
             isAuthed: async () => {
                 const currToken = localStorage.getItem('token');
                 const currUser = localStorage.getItem('user');
@@ -30,7 +32,19 @@ export class AuthProvider extends React.Component {
                         this.setState({user: null, authed: false});
                     }
                 }
-            }     
+            },
+            hasApplied: async () => {
+                try {
+                    const response = await axios.post('/api/users/hasInfo', {token: localStorage.getItem('token'), userId: localStorage.getItem('id')});
+                    if (response.data.hasInfo) {
+                        this.setState({applied: true});
+                    } else {
+                        this.setState({applied: false});
+                    }
+                } catch (err) {
+                    this.setState({applied: false});
+                }
+            }    
         };
         this.login = this.login.bind(this);
         this.logout = this.logout.bind(this);
