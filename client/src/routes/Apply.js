@@ -180,13 +180,13 @@ class Apply extends React.Component {
               </label>
             </div>
             <label className="form-label mt-2">{'What skills do you have in these areas?'}</label>
+            <textarea className="form-control mb-2" rows="3" name="skills" value={this.state.skills} onChange={this.handleChange} required/>
             <div class="form-check">
               <input class="form-check-input" type="checkbox" value="" name="mlh" checked={this.state.mlh} onChange={this.handleChange}/>
               <label class="form-check-label mb-2">
                 I agree to the <a href="https://static.mlh.io/docs/mlh-code-of-conduct.pdf">MLH Code of Conduct</a>
               </label>
             </div>
-            <textarea className="form-control mb-2" rows="3" name="skills" value={this.state.skills} onChange={this.handleChange} required/>
             <button type="submit" class="btn robotech-bg my-3" onClick={this.handleSubmit} >Submit</button>
           </form>
         </div>}
