@@ -11,6 +11,7 @@ class Apply extends React.Component {
     this.state = {first: '', last: '', age: '', school: '', other: '', diet: false, restrictions: '', design: false, mech: false, elec: false, soft: false, skills: '', interest: '', mlh: false, error: false};
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.fileInput = React.createRef();
   }
 
   static contextType = AuthContext;
@@ -74,29 +75,37 @@ class Apply extends React.Component {
   async handleSubmit(event) {
     event.preventDefault();
     if (!(this.state.first && this.state.last && this.state.age && this.state.school && this.state.skills && this.state.mlh 
-      && this.state.interest && (this.state.design || this.state.mech || this.state.elec || this.state.soft))) {
+      && this.state.interest && (this.state.design || this.state.mech || this.state.elec || this.state.soft || this.fileInput.current.files[0]))) {
       alert("Please complete all fields!");
+    } else if (this.fileInput.current.files[0].type != 'application/pdf') {
+      alert('Please submit resume as a pdf file!');
     } else {
         const userInfo = {token: localStorage.getItem('token'), userId: localStorage.getItem('id')};
         const data = {...this.state, ...userInfo};
         try {
           await axios.post('/api/apply/info', data);
-          this.setState({info: true});
         } catch {
           alert('Failed to submit application, please try again later!');
+        }
+        try {
+          const data = new FormData();
+          data.append('file', this.fileInput.current.files[0]);
+          data.append('userId', localStorage.getItem('id'));
+          data.append('first', this.state.first);
+          data.append('last', this.state.last);
+          const res = await axios.post('/api/apply/resume', data, {headers: 
+          {
+              'Content-Type': 'multipart/form-data',
+              'Authorization': localStorage.getItem('token')
+          }});
+          this.context.setApplied({info: true});
+        } catch (err) {
+          alert('Failed to submit resume, please try again later');
         }
     }
   }
 
   render() {
-    var questionComponents;
-
-    /*if (!this.state.questions) {
-      questionComponents = <p>Could not retrieve application questions</p>
-    } else {
-      questionComponents = this.state.questions.map((entry) => 
-         <Question questionText={entry.label} key={entry.name}/>
-      )} */
 
     return (
       <div className="container">
@@ -181,6 +190,10 @@ class Apply extends React.Component {
             </div>
             <label className="form-label mt-2">{'What skills do you have in these areas?'}</label>
             <textarea className="form-control mb-2" rows="3" name="skills" value={this.state.skills} onChange={this.handleChange} required/>
+            <div>
+              <label for="formFile" class="form-label">Please submit your resume (pdf)</label>
+              <input class="form-control mb-2" type="file" name="formFile" ref={this.fileInput}/>
+            </div>
             <div class="form-check">
               <input class="form-check-input" type="checkbox" value="" name="mlh" checked={this.state.mlh} onChange={this.handleChange}/>
               <label class="form-check-label mb-2">
@@ -197,6 +210,7 @@ class Apply extends React.Component {
           </div>
         }
       </div>
+
     )
   }
 }

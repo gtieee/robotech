@@ -8,7 +8,8 @@ export const AuthContext = React.createContext({
     login: () => {},
     logout: () => {},
     isAuthed: () => {},
-    hasApplied: () => {}
+    hasApplied: () => {},
+    setApplied: () => {}
 })
 
 export class AuthProvider extends React.Component {
@@ -44,7 +45,10 @@ export class AuthProvider extends React.Component {
                 } catch (err) {
                     this.setState({applied: false});
                 }
-            }    
+            },
+            setApplied: () => {
+                this.setState({applied: true});
+            }
         };
         this.login = this.login.bind(this);
         this.logout = this.logout.bind(this);
