@@ -7,6 +7,7 @@ import Apply from './routes/Apply.js';
 import Login from './routes/Login.js';
 import Register from './routes/Register.js';
 import Coming from './routes/Coming.js';
+import Dashboard from './routes/Dashboard.js';
 import axios from 'axios';
 import { AuthProvider, AuthContext } from './context/AuthContext';
 
@@ -57,6 +58,8 @@ function App() {
           <Route path="/login" element={<Login />} />
 
           <Route path="/register" element={<Register />} />
+
+          <Route path="/admin" element={<Dashboard />} />
         </Routes>
       </AuthProvider>
     )
