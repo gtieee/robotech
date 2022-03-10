@@ -7,7 +7,12 @@ import Apply from './routes/Apply.js';
 import Login from './routes/Login.js';
 import Register from './routes/Register.js';
 import Coming from './routes/Coming.js';
+<<<<<<< HEAD
 import Profile from './routes/Profile.js';
+=======
+import Dashboard from './routes/Dashboard.js';
+import axios from 'axios';
+>>>>>>> keary
 import { AuthProvider, AuthContext } from './context/AuthContext';
 import { useContext } from 'react';
 
@@ -73,12 +78,16 @@ function App() {
 
           <Route path="/register" element={<Register />} />
 
+<<<<<<< HEAD
           <Route path="/admin">
             <Route path=":userId" element={
               <RequireAdmin>
                 <Profile />
               </RequireAdmin> } />  
           </Route>
+=======
+          <Route path="/admin" element={<Dashboard />} />
+>>>>>>> keary
         </Routes>
       </AuthProvider>
     )
