@@ -191,7 +191,7 @@ class Apply extends React.Component {
             <label className="form-label mt-2">{'What skills do you have in these areas?'}</label>
             <textarea className="form-control mb-2" rows="3" name="skills" value={this.state.skills} onChange={this.handleChange} required/>
             <div>
-              <label for="formFile" class="form-label">Please submit your resume (pdf)</label>
+              <label htmlFor="formFile" class="form-label">Please submit your resume (pdf)</label>
               <input class="form-control mb-2" type="file" name="formFile" ref={this.fileInput}/>
             </div>
             <div class="form-check">

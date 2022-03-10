@@ -5,8 +5,10 @@ export const AuthContext = React.createContext({
     user: null,
     authed: false,
     applied: false,
+    admin: false,
     login: () => {},
     logout: () => {},
+    isAdmin: () => {},
     isAuthed: () => {},
     hasApplied: () => {},
     setApplied: () => {}
@@ -15,7 +17,7 @@ export const AuthContext = React.createContext({
 export class AuthProvider extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {user: null, authed: false, applied: false, login: () => {}, isAuthed: () => {}, logout: () => {},
+        this.state = {user: null, authed: false, applied: false, admin: false, login: () => {}, logout: () => {},
             isAuthed: async () => {
                 const currToken = localStorage.getItem('token');
                 const currUser = localStorage.getItem('user');
@@ -46,6 +48,26 @@ export class AuthProvider extends React.Component {
                     this.setState({applied: false});
                 }
             },
+            isAdmin: async () => {
+                const currToken = localStorage.getItem('token');
+                const currUser = localStorage.getItem('id');
+                if (!currToken) {
+                    this.setState({admin: false});
+                } else {
+                    try {
+                        const response = await axios.post('/api/users/checkAdmin', {token: currToken, id: currUser});
+                        if (response.data.admin) {
+                            this.setState({user: currUser, authed: true, admin: true});
+                            return true;
+                        } else {
+                            this.setState({admin: false});
+                            return false;
+                        }
+                    } catch (err) {
+                        this.setState({admin: false});
+                    }
+                }
+            },
             setApplied: () => {
                 this.setState({applied: true});
             }
@@ -60,7 +82,7 @@ export class AuthProvider extends React.Component {
             this.setState({user: null, authed: false});
             return false
         } else {
-            this.setState({user: response.data.user, authed: true});
+            this.setState({user: response.data.user, authed: true, admin: response.data.admin});
             localStorage.setItem('token', response.data.token);
             localStorage.setItem('user', response.data.user);
             localStorage.setItem('id', response.data.id);

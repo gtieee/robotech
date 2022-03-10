@@ -31,8 +31,10 @@ router.post('/', async (req, res) => {
         try {
             if (result) {
                 const userId = userData.rows[0].id;
+                const role = userData.rows[0].role;
+                const admin = role ? true : false;
                 const responseToken = jwt.sign({user_id: email}, process.env.TOKEN_KEY, {expiresIn: '2h'});
-                res.status(200).json({id: userId, token: responseToken, user: email, message: 'Logged in'});
+                res.status(200).json({id: userId, token: responseToken, user: email, admin: admin, message: 'Logged in'});
             } else {
                 res.status(401).json({id: null, token: null, user: null, message: 'Incorrect login information'});
             }

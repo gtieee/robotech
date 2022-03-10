@@ -36,6 +36,13 @@ class LoginForm extends React.Component {
     }
 
     render() {
+        var next;
+        if (this.context.admin) {
+            next = <Navigate to="/admin" replace />;
+        } else if (this.context.authed) {
+            next = <Navigate to="/home" replace />;
+        }
+
         return (
             <div>
             <NavBar/>
@@ -57,7 +64,7 @@ class LoginForm extends React.Component {
                             No Account ? <Link to='/register' className="link">Register</Link>
                         </p>
                         <button type="submit" className="button-rt btn robotech-bg">LOGIN</button>
-                            {this.context.authed && <Navigate to="/home" replace />}
+                            {next}
                         </form>
                     </div>
                     <div className="col-xs-12 col-md-6 App">

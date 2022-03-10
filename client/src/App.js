@@ -7,8 +7,9 @@ import Apply from './routes/Apply.js';
 import Login from './routes/Login.js';
 import Register from './routes/Register.js';
 import Coming from './routes/Coming.js';
-import axios from 'axios';
+import Profile from './routes/Profile.js';
 import { AuthProvider, AuthContext } from './context/AuthContext';
+import { useContext } from 'react';
 
 function RequireAuth({children}) {
   return <AuthContext.Consumer>
@@ -23,6 +24,20 @@ function RequireAuth({children}) {
       }
     }}
   </AuthContext.Consumer>
+}
+
+function RequireAdmin({children}) {
+  let auth = useContext(AuthContext);
+  let adminState;
+  if (!auth.admin) {
+    adminState = auth.isAdmin();
+  }
+  console.log(auth);
+  if (!(auth.admin || adminState)) {
+    return <Navigate to='/home' replace />
+  } else {
+    return children;
+  }
 }
 
 function App() {
@@ -57,6 +72,13 @@ function App() {
           <Route path="/login" element={<Login />} />
 
           <Route path="/register" element={<Register />} />
+
+          <Route path="/admin">
+            <Route path=":userId" element={
+              <RequireAdmin>
+                <Profile />
+              </RequireAdmin> } />  
+          </Route>
         </Routes>
       </AuthProvider>
     )
