@@ -7,7 +7,6 @@ function dotStyle(color) {
         backgroundColor: color,
         borderRadius: '50%',
         display: 'inline-block',
-        boxShadow: '1px 1px grey'
     }
 }
 
@@ -50,13 +49,13 @@ function UserRow(props) {
     return (
         <div className="row my-2" style={{backgroundColor: "#EAEAEA", borderRadius: "5px"}}>
             <div className="col-4 text-center">
-                <Link to={'/admin/' + props.user.id} className='nav-link' style={{color: 'black'}}>{props.user.first + ' ' + props.user.last}</Link>
+                <Link to={'/admin/' + props.user.id} className='nav-link' style={{color: 'black'}}>{props.user.first_name + ' ' + props.user.last_name}</Link>
             </div>
             <div className="col-4 text-center">
                 <p style={{paddingTop: '7px', height: '24px'}}>{props.user.email}</p>
             </div>
             <div className="col-4 text-center">
-                {appliedState(props.user.applyId, false, false)}
+                {appliedState(props.user.apply_id, props.user.accepted, false)}
             </div>
         </div>
     )

@@ -6,7 +6,7 @@ var router = express.Router();
 const db = require('../db');
 const { RowDescriptionMessage } = require('pg-protocol/dist/messages');
 
-router.get('/', admin, async (req, res) => {
+router.post('/', admin, async (req, res) => {
     const data = await db.query("SELECT * FROM users;");
     res.send(data.rows);
 })
@@ -74,6 +74,7 @@ router.post('/name', admin, async (req, res) => {
             return;
         }
         res.status(200).json({first: userRow.rows[0].first_name, last: userRow.rows[0].last_name});
+        return;
     } catch (err) {
         console.log(err)
         res.status(500);
@@ -95,9 +96,50 @@ router.post('/applyData', admin, async (req, res) => {
             return;
         }
         res.status(200).json(applyRow.rows[0]);
+        return;
     } catch (err) {
         console.log(err)
         res.status(500);
+        return;
+    }
+})
+
+router.post('/accept', admin, async (req, res) => {
+    if (!req.body.userId) {
+        res.status(400);
+        return;
+    }
+    try {
+        await db.query('UPDATE users SET accepted = true WHERE id = $1', [req.body.userId]);
+        res.status(200);
+        return;
+    } catch (err) {
+        console.log(err);
+        res.status(400);
+        return;
+    }
+})
+
+router.post('/checkAccept', admin, async (req, res) => {
+    if (!req.body.userId) {
+        res.status(400);
+        return;
+    }
+    try {
+        const userRow = await db.query('SELECT * FROM users WHERE id = $1', [req.body.userId]);
+        if (!userRow.rows[0]) {
+            res.status(400);
+            return;
+        } else if (!userRow.rows[0].accepted) {
+            res.status(200).json({accepted: false});
+            return;
+        } else {
+            res.status(200).json({accepted: true});
+            return;
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(400);
         return;
     }
 })

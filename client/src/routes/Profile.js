@@ -9,10 +9,11 @@ import logo from '../FinalLogo.png';
 function Profile() {
     let params = useParams();
     let token = localStorage.getItem('token');
-    let authId = localStorage.getItem('user');
+    let authId = localStorage.getItem('id');
 
-    let [applyState, setApplyState] = useState(false);
+    let [applyState, setApplyState] = useState('init');
     let [acceptState, setAcceptState] = useState(false);
+    let [error, setError] = useState(false);
 
     let [userName, setUserName] = useState({
         first: '',
@@ -34,38 +35,70 @@ function Profile() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const nameResponse = await axios.post('/api/users/name', {userId: params.userId, token: token});
+                const nameResponse = await axios.post('/api/users/name', {userId: params.userId, token: token, id: authId});
                 setUserName(nameResponse.data);
-                const appResponse = await axios.post('/api/users/hasInfo', {userId: params.userId, token: token});
+                const appResponse = await axios.post('/api/users/hasInfo', {userId: params.userId, token: token, id: authId});
                 if (appResponse.data.hasInfo) {
-                    setApplyState(true);
+                    setApplyState('yes');
                 } else {
-                    setApplyState(false);
+                    setApplyState('no');
                     return;
                 }
+                const acceptResponse = await axios.post('/api/users/checkAccept', {userId: params.userId, token: token, id: authId});
+                if (acceptResponse.data.accepted) {
+                    setAcceptState(true);
+                } else {
+                    setAcceptState(false);
+                }
             } catch (err) {
-                console.log('Could not get this users info');
+                setError(true);
             }
             try {
-                const response = await axios.post('/api/users/applyData', {userId: params.userId, token: token});
+                const response = await axios.post('/api/users/applyData', {userId: params.userId, token: token, id: authId});
                 setAppData(response.data);
             } catch (err) {
-                console.log('Could not get this users application info');
+                setError(true);
             }
         }
         fetchData();
     }, [authId, token, params])
 
+    let handleAccept = async () => {
+        try {
+            await axios.post('/api/users/accept', {userId: params.userId, token: token, id: authId});
+            setAcceptState(true);
+        } catch {
+            alert('Error accepting this participant');
+        }
+    }
+
+    var appComponent;
+    if (error) {
+        appComponent = <h4>Failed to get this user's application data</h4>
+    }
+    else if (applyState === 'init') {
+        appComponent = <p></p>
+    }
+    else if (applyState === 'no') {
+        appComponent = <h4>This user has not applied yet!</h4>
+    }
+    else {
+        appComponent = <Application data={appData} name={userName} />
+    }
+
     return (
         <div className=' App container w-75'>
             <img src={logo} className="img-fluid col-2"></img>
-            <h1 className="pt-2 robotech-color">RoboTech Application</h1>
+            <h1 className="pt-2 robotech-color">User Profile</h1>
             <hr></hr>
             <div>
                 <h1>{userName.first + ' ' + userName.last}</h1>
-                <h4>{'Status: ' + applyState}</h4>
+                <h4 className="mb-4">{appliedState((applyState === 'yes'), acceptState, 0)}</h4>
             </div>
-            <Application data={appData} name={userName} />
+            {(applyState === 'yes') && 
+            <button type="submit" class="btn robotech-bg my-3" onClick={handleAccept} >Accept</button>
+            }
+            {appComponent}
         </div>
     )
 
@@ -77,10 +110,10 @@ function Application(props) {
     return (
         <div>
             <form>
-                <label className="form-label">Age</label>
-                <input className="form-control mb-2" type="number" name="age" value={props.data.age} readOnly disabled/>
                 <label className="form-label">School</label>
                 <input className="form-control mb-2" type="text" name="other" value={props.data.school} readOnly disabled/>
+                <label className="form-label">Age</label>
+                <input className="form-control mb-2" type="number" name="age" value={props.data.age} readOnly disabled/>
                 <label className="form-label">Dietary Restrictions:</label>
                 <input className="form-control mb-2" type="text" name="restrictions" value={props.data.dietary || 'None'} readOnly disabled/>
                 <label className="form-label mt-2">Interest</label>
@@ -118,6 +151,52 @@ function Application(props) {
             </form>
         </div>
     )
+}
+
+function dotStyle(color) {
+    return {
+        height: '22px',
+        width: '20px',
+        backgroundColor: color,
+        borderRadius: '50%',
+        display: 'inline-block',
+        marginTop: '3.5px'
+    }
+}
+
+function appliedState(applied, accepted, rejected) {
+    if (!applied) {
+        return (
+            <div className='row justify-content-center' style={{paddingTop: '7px', height: '24px'}}>
+                <span style={dotStyle('grey')}/>
+                <p className='col-2'>Registered</p>
+            </div>
+        )
+    }
+    else if (!(accepted || rejected)) {
+        return (
+            <div className='row justify-content-center' style={{paddingTop: '7px', height: '24px'}}>
+                <span style={dotStyle('yellow')}/>
+                <p className='col-2'>Applied</p>
+            </div>
+        )
+    }
+    else if (rejected) {
+        return (
+            <div className='row justify-content-center' style={{paddingTop: '7px', height: '24px'}}>
+                <span style={dotStyle('red')}/>
+                <p className='col-2'>Rejected</p>
+            </div>
+        )
+    }
+    else {
+        return (
+            <div className='row justify-content-center' style={{paddingTop: '7px', height: '24px'}}>
+                <span style={dotStyle('green')}/>
+                <p className='col-2'>Accepted</p>
+            </div>
+        )
+    }
 }
 
 export default Profile;

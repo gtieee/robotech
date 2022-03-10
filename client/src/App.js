@@ -7,14 +7,10 @@ import Apply from './routes/Apply.js';
 import Login from './routes/Login.js';
 import Register from './routes/Register.js';
 import Coming from './routes/Coming.js';
-<<<<<<< HEAD
 import Profile from './routes/Profile.js';
-=======
-import Dashboard from './routes/Dashboard.js';
-import axios from 'axios';
->>>>>>> keary
+import Dashboard from './routes/Dashboard.js'
 import { AuthProvider, AuthContext } from './context/AuthContext';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 function RequireAuth({children}) {
   return <AuthContext.Consumer>
@@ -33,11 +29,10 @@ function RequireAuth({children}) {
 
 function RequireAdmin({children}) {
   let auth = useContext(AuthContext);
-  let adminState;
-  if (!auth.admin) {
-    adminState = auth.isAdmin();
-  }
-  console.log(auth);
+  let [adminState, setAdminState] = useState(false);
+  useEffect(() => {
+    setAdminState(auth.isAdmin())
+  }, [])
   if (!(auth.admin || adminState)) {
     return <Navigate to='/home' replace />
   } else {
@@ -78,16 +73,19 @@ function App() {
 
           <Route path="/register" element={<Register />} />
 
-<<<<<<< HEAD
           <Route path="/admin">
+            <Route index element={
+              <RequireAdmin>
+                <Dashboard />
+              </RequireAdmin> }>
+            </Route>
+            
             <Route path=":userId" element={
               <RequireAdmin>
                 <Profile />
-              </RequireAdmin> } />  
+              </RequireAdmin> }>  
+            </Route>
           </Route>
-=======
-          <Route path="/admin" element={<Dashboard />} />
->>>>>>> keary
         </Routes>
       </AuthProvider>
     )
