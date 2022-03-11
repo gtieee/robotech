@@ -1,6 +1,7 @@
 const express = require('express');
 const auth = require('../middleware/auth.js');
 const admin = require('../middleware/admin.js');
+const AWS = require('@aws-sdk/client-ses');
 var router = express.Router();
 
 const db = require('../db');
@@ -109,9 +110,56 @@ router.post('/accept', admin, async (req, res) => {
         res.status(400);
         return;
     }
+
+    var userEmail;
+
     try {
+        const userRow = await db.query('SELECT * FROM users WHERE id = $1', [req.body.userId]);
+        if (!userRow.rows[0]) {
+            res.status(400);
+            return;
+        }
+        userEmail = userRow.rows[0].email;
+    } catch (err) {
+        console.log(err);
+        res.status(400);
+        return;
+    }
+
+    const ses = new AWS.SESClient({region: 'us-west-2'})
+    const params = {
+        Destination: {
+          CcAddresses: [
+            
+          ],
+          ToAddresses: [
+            userEmail
+          ],
+        },
+        Message: {
+          Body: {
+            Html: {
+              Charset: "UTF-8",
+              // edit this to change email body
+              Data: "<div>Congratulations! We are happy to inform you that you have been accepted to RoboTech!</div>" +
+                    "<br><div> We hope to see you on April 1st! Please fill out the following form to confirm your acceptance!</div>",
+            },
+          },
+          Subject: {
+            Charset: "UTF-8",
+            Data: "RoboTech Acceptance",
+          },
+        },
+        Source: "admin@gt-robotech.com", // SENDER_ADDRESS
+        ReplyToAddresses: [
+          "arieck3@gatech.edu",
+          "hsapra3@gatech.edu"
+        ],
+      };
+    try {
+        const data = await ses.send(new AWS.SendEmailCommand(params));
         await db.query('UPDATE users SET accepted = true WHERE id = $1', [req.body.userId]);
-        res.status(200);
+        res.status(200).send({success: true});
         return;
     } catch (err) {
         console.log(err);
