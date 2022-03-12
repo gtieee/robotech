@@ -147,13 +147,19 @@ router.post('/accept', admin, async (req, res) => {
             Html: {
               Charset: "UTF-8",
               // edit this to change email body
-              Data: "<div>Congratulations! We are happy to inform you that you have been accepted to RoboTech!</div>" +
-                    "<br><div> We hope to see you on April 1st! Please fill out the following form to confirm your acceptance!</div>",
+              Data: "<div>Hello,</div>" +
+                    "<br><div> We are very pleased to accept you and invite you to the first ever RoboTech. This year, we had immense support with 500+ applicants. We are excited to see what you bring to the table and how you can innovate.</div>"+
+                    "<br><div> If you are traveling to Georgia Tech, please fill out this form for travel reimbursement. <a href='https://forms.gle/W1WiEWmiJpwc4bRi7'>Form Here!</a> </div>" + 
+                    "<br><div>We will do our best to reimburse you as much as possible. Reimbursements only happen if you submit a project at the hackathon, so we will only reimburse you post the hackathon.</div>" + 
+                    "<br><div>We are so very excited that you chose to be a part of RoboTech. We know you will have a great 36 hours where not only will you work on exciting ideas, but also have a great time meeting people and participating in side-events.</div>" + 
+                    "<br><div>Please fill out the reimbursement form, if needed, no later than 48 hours post acceptance.</div>" + 
+                    "<br><div>Best,</div>" + 
+                    "<br><div>GT IEEE.</div>",
             },
           },
           Subject: {
             Charset: "UTF-8",
-            Data: "RoboTech Acceptance",
+            Data: "[UPDATE] RoboTech Decisions",
           },
         },
         Source: "admin@gt-robotech.com", // SENDER_ADDRESS
