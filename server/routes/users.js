@@ -18,7 +18,7 @@ router.get('/stats', admin, async (req, res) => {
         return;
     }
 
-    var data = {registered: 0, applied: 0};
+    var data = {registered: 0, applied: 0, accepted: 0};
 
     try {
         data.registered = (await db.query("SELECT * FROM users;")).rows.length;
@@ -30,6 +30,12 @@ router.get('/stats', admin, async (req, res) => {
         data.applied = (await db.query("SELECT * FROM applications;")).rows.length;
     } catch {
         res.status(500).send('Failed to fetch from applications database');
+        return;
+    }
+    try {
+        data.accepted = (await db.query("SELECT * FROM users WHERE accepted = true;")).rows.length;
+    } catch {
+        res.status(500).send('Failed to fetch from users database');
         return;
     }
 
