@@ -12,12 +12,7 @@ router.post('/', admin, async (req, res) => {
     res.send(data.rows);
 })
 
-router.get('/stats', admin, async (req, res) => {
-    if (!req.headers.authorization || (req.headers.authorization != 'rt-admin')) {
-        res.status(403).send('Unauthorized');
-        return;
-    }
-
+router.post('/stats', admin, async (req, res) => {
     var data = {registered: 0, applied: 0, accepted: 0};
 
     try {

@@ -14,7 +14,7 @@ class Dashboard extends React.Component {
             const usersResponse = await axios.post('/api/users', {token: localStorage.getItem('token'), id: localStorage.getItem('id')});
             this.setState({users: usersResponse.data})
             const statsResponse = await axios.post('/api/users/stats', {token: localStorage.getItem('token'), id: localStorage.getItem('id')});
-            this.setState({registered: statsResponse.registered, applied: statsResponse.applied, accepted: statsResponse.accepted});
+            this.setState({registered: statsResponse.data.registered, applied: statsResponse.data.applied, accepted: statsResponse.data.accepted});
         } catch {
             this.setState({users: []});
         }
@@ -36,9 +36,11 @@ class Dashboard extends React.Component {
                     <hr></hr>
                 </div>
                 <div className="container">
-                    <h4>{'Registered: ' + this.state.registered}</h4>
-                    <h4>{'Applied: ' + this.state.applied}</h4>
-                    <h4>{'Accepted: ' + this.state.accepted + '/' + this.state.applied}</h4>
+                    <div style={{textAlign: 'center'}}>
+                        <h4 className='p-1'>{'Registered: ' + this.state.registered}</h4>
+                        <h4 className='p-1'>{'Applied: ' + this.state.applied}</h4>
+                        <h4 className='p-1'>{'Accepted: ' + this.state.accepted + '/' + this.state.applied}</h4>
+                    </div>
                     {userComponents}
                 </div>            
             </div>
