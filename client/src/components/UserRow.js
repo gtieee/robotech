@@ -45,17 +45,32 @@ function appliedState(applied, accepted, rejected) {
     }
 }
 
+function schoolState(school) {
+    if (school == null) {
+        return (
+            <p style={{paddingTop: '7px', height: '24px'}}>None</p>
+        )
+    }
+    else {
+        return (<p style={{paddingTop: '7px', height: '24px'}}>{school}</p>)
+    }
+    
+}
+
 function UserRow(props) {
     return (
         <div className="row my-2" style={{backgroundColor: "#EAEAEA", borderRadius: "5px"}}>
-            <div className="col-4 text-center">
+            <div className="col-3 text-center">
                 <Link to={'/admin/' + props.user.id} className='nav-link' style={{color: 'black'}}>{props.user.first_name + ' ' + props.user.last_name}</Link>
             </div>
-            <div className="col-4 text-center">
+            <div className="col-3 text-center">
                 <p style={{paddingTop: '7px', height: '24px'}}>{props.user.email}</p>
             </div>
-            <div className="col-4 text-center">
+            <div className="col-3 text-center">
                 {appliedState(props.user.apply_id, props.user.accepted, false)}
+            </div>
+            <div className="col-3 text-center">
+                {schoolState(props.user.school)}
             </div>
         </div>
     )
