@@ -8,7 +8,7 @@ const db = require('../db');
 const { RowDescriptionMessage } = require('pg-protocol/dist/messages');
 
 router.post('/', admin, async (req, res) => {
-    const data = await db.query("SELECT * FROM users;");
+    const data = await db.query("SELECT users.id, users.email, users.first_name, users.last_name, users.apply_id, users.accepted, applications.school FROM users LEFT JOIN applications ON users.id = applications.id ORDER BY users.last_name;");
     res.send(data.rows);
 })
 
