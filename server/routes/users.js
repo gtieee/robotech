@@ -8,8 +8,14 @@ const db = require('../db');
 const { RowDescriptionMessage } = require('pg-protocol/dist/messages');
 
 router.post('/', admin, async (req, res) => {
-    const data = await db.query("SELECT users.id, users.email, users.first_name, users.last_name, users.apply_id, users.accepted, applications.school FROM users LEFT JOIN applications ON users.apply_id = applications.id ORDER BY users.last_name;");
-    res.send(data.rows);
+    try {
+        const data = await db.query("SELECT users.id, users.email, users.first_name, users.last_name, users.apply_id, users.accepted, applications.school FROM users LEFT JOIN applications ON users.apply_id = applications.id ORDER BY users.last_name;");
+        res.status(200).send(data.rows);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send('Error');
+    }
+    
 })
 
 router.post('/stats', admin, async (req, res) => {
@@ -38,6 +44,24 @@ router.post('/stats', admin, async (req, res) => {
 
 })
 
+router.post('/exists', async (req, res) => {
+    if (!req.body.email) {
+        res.status(400).json({exists: false})
+        return;
+    }
+    try {
+        const userRow = await db.query('SELECT * FROM users WHERE email = $1;', [req.body.email]);
+        if (userRow.rows[0]) {
+            res.status(200).json({exists: true});
+        } else {
+            res.status(200).json({exists: false});
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(200).json({exists: false});
+    }
+})
+
 router.get('/checkAuth', auth, async (req, res) => {
     res.status(200).send({authed: true});
 })
@@ -48,7 +72,7 @@ router.post('/checkAdmin', admin, async (req, res) => {
 
 router.post('/hasInfo', auth, async (req, res) => {
     if (!req.body.userId) {
-        res.status(200).json({hasInfo: false})
+        res.status(400).json({hasInfo: false})
         return;
     }
     try {

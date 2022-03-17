@@ -63,6 +63,9 @@ class LoginForm extends React.Component {
                         <p className="p-rt">
                             No Account ? <Link to='/register' className="link">Register</Link>
                         </p>
+                        <p className="p-rt">
+                            Forgot Password ? <Link to='/reset' className="link">Reset</Link>
+                        </p>
                         <button type="submit" className="button-rt btn robotech-bg">LOGIN</button>
                             {next}
                         </form>

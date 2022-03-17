@@ -1,83 +1,127 @@
-import React from 'react';
-import { Navigate, Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import logo from '../FinalLogo.png';
 import validator from 'validator';
-import NavBar from '../components/NavBar';
 import axios from 'axios';
 
-class ResetForm extends React.Component {
+function ResetForm() {
+    var [email, setEmail] = useState('');
+    var [newPass, setNewPass] = useState('');
+    var [confirmPass, setConfirmPass] = useState('');
+
+    var params = useParams();
+
+    const handleChange = (event) => {
+        switch (event.target.name) {
+            case 'email':
+                setEmail(event.target.value);
+                break;
+            case 'newPass':
+                setNewPass(event.target.value);
+                break;
+            case 'confirmPass':   
+                setConfirmPass(event.target.value);
+                break;
+        }
+    }
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        if (!(email && newPass && confirmPass)) {
+            alert('Please enter all fields!');
+        }
+        else if (!validator.isEmail(email)) {
+            alert('Please enter a valid email');
+        }
+        else if (newPass != confirmPass) {
+            alert('Passwords must match!');
+        }
+        else {
+            try {
+                const response = await axios.post('/api/register/update', {email: email, newPass: newPass, token: params.token});
+                alert(response.data.message);
+                if (response.data.success) {
+                    setEmail('');
+                    setNewPass('');
+                    setConfirmPass('');
+                }
+            } catch (err) {
+                alert('Failed to reset password!');
+            }
+        }
+    }
+
+    return (
+        <div className="App container">
+            <img src={logo} className="img-fluid col-2"></img>
+            <h1 className="pt-2 robotech-color">Password Reset</h1>
+            <hr></hr>
+            <div className='row justify-content-center'>
+                <form className='col-md-6 col-xl-3'>
+                    <label className='form-label'>Email</label>
+                    <input className="form-control mb-3" type="text" name="email" value={email} onChange={handleChange} placeholder="Email" required />
+                    <label className='form-label'>New Password</label>
+                    <input className="form-control mb-3" type="password" name="newPass" value={newPass} onChange={handleChange} placeholder="Password" required />
+                    <label className='form-label'>Confirm Password</label>
+                    <input className="form-control mb-3" type="password" name="confirmPass" value={confirmPass} onChange={handleChange} placeholder="Confirm Password" required />
+                    <button type="submit" class="btn robotech-bg my-3" onClick={handleSubmit}>Submit</button>
+                    <br/>
+                    <Link to={'/login'} className="btn btn-success robotech-bg">Return to Log In</Link>
+                </form>
+            </div>
+        </div>
+    )
+}
+
+class Reset extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {failed: false, emailVal: '', confirmVal: ''};
+        this.state = {email: '', newPass: '', confirmPass: ''};
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     handleChange(event) {
-        if (event.target.id === 'emailForm') {
-            this.setState({emailVal: event.target.value});
-        } else {
-            this.setState({confirmVal: event.target.value});
+        switch (event.target.name) {
+            case 'email':
+                this.setState({email: event.target.value});
+                break;
+            case 'newPass':
+                this.setState({newPass: event.target.value});
+                break;
+            case 'confirmPass':   
+                this.setState({confirmPass: event.target.value});
+                break;
         }
     }
 
-    async handleSubmit(event) {
-        event.preventDefault();
-        const toEmail = this.state.emailVal
-        if (!validator.isEmail(this.state.emailVal)) {
-            alert('Please enter a valid email!');
+    async handleSubmit() {
+        try {
+            const response = await axios.post('/api/register/update', {email: this.state.email, token: 'test'})
+            alert(response.data.message)
+        } catch (err) {
+            alert('Failed to reset password!');
         }
-        else if (!(this.state.emailVal && this.state.confirmVal)) {
-            alert('Please enter all fields!');
-        }
-        else if (this.state.emailVal != this.state.confirmVal) {
-            alert('Emails must match!');
-        }
-        else {
-            try {
-                const check = await axios.post('/api/users/exists', {email: toEmail});
-                if (!check.data.response) {
-                    alert('Could not find a user with this email!');
-                    return;
-                }
-                //await axios.post('/api/users/sendReset', {email: toEmail});
-            }
-            catch {
-                alert('Error sending password reset!');
-            }      
-        }   
     }
 
     render() {
         return (
-            <div>
-            <NavBar/>
-            <div className="app-container container mt-5 w-75-m h-100 align-items-center" >
-                <div className = "row">
-                    <div className="col-xs-12 col-md-6">
-                        <h1 className="pt-2 robotech-color">RESET PASSWORD</h1>
-
-                        <form onSubmit={this.handleSubmit}>
-                            <div>
-                                <label className="form-label">Email</label>
-                                <input className="form-rt form-control mb-2" type="text" name="email" id="emailForm" placeholder="Enter Email" value={this.state.emailVal} onChange={this.handleChange}/>
-                            </div>
-                            <div>
-                                <label className="form-label">Confirm Email</label>
-                                <input className="form-rt form-control mb-2" type="text" name="confirm" id="confirmForm" placeholder="Confirm Email" value={this.state.passVal} onChange={this.handleChange}/>
-                            </div>
-                        <p className="p-rt">
-                           <Link to='/register' className="link">Return to Log In</Link>
-                        </p>
-                        <button type="submit" className="button-rt btn robotech-bg">SEND</button>
-                            {this.context.authed && <Navigate to="/home" replace />}
-                        </form>
-                    </div>
-                    <div className="col-xs-12 col-md-6 App">
-                        <img src={logo} className="floating img-fluid col-2"></img>
-                    </div>
+            <div className="App container">
+                <img src={logo} className="img-fluid col-2"></img>
+                <h1 className="pt-2 robotech-color">Password Reset</h1>
+                <hr></hr>
+                <div className='row justify-content-center'>
+                    <form className='col-md-6 col-xl-3'>
+                        <label className='form-label'>Email</label>
+                        <input className="form-control mb-3" type="text" name="email" value={this.state.email} onChange={this.handleChange} placeholder="Email" required />
+                        <label className='form-label'>New Password</label>
+                        <input className="form-control mb-3" type="text" name="newPass" value={this.state.newPass} onChange={this.handleChange} placeholder="Password" required />
+                        <label className='form-label'>Confirm Password</label>
+                        <input className="form-control mb-3" type="text" name="confirmPass" value={this.state.confirmPass} onChange={this.handleChange} placeholder="Confirm Password" required />
+                        <button type="submit" class="btn robotech-bg my-3" onClick={this.handleSubmit} >Submit</button>
+                    </form>
+                    
                 </div>
-            </div>
             </div>
         )
     }

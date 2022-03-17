@@ -8,7 +8,9 @@ import Login from './routes/Login.js';
 import Register from './routes/Register.js';
 import Coming from './routes/Coming.js';
 import Profile from './routes/Profile.js';
-import Dashboard from './routes/Dashboard.js'
+import Dashboard from './routes/Dashboard.js';
+import RequestReset from './routes/RequestReset.js';
+import ResetForm from './routes/Reset.js';
 import { AuthProvider, AuthContext } from './context/AuthContext';
 import { useContext, useEffect, useState } from 'react';
 
@@ -72,6 +74,11 @@ function App() {
           <Route path="/login" element={<Login />} />
 
           <Route path="/register" element={<Register />} />
+          
+          <Route path="/reset" >
+            <Route index element={<RequestReset />} />
+            <Route path=":token" element={<ResetForm />} />
+          </Route> 
 
           <Route path="/admin">
             <Route index element={

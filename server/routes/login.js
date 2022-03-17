@@ -17,10 +17,14 @@ router.post('/', async (req, res) => {
 
     try {
         userData = await db.query("SELECT * FROM users WHERE email = $1", [email]);
-        if (!userData.rows[0] && !userData.rows[0].pass) {
+        if (!userData.rows[0]) {
             res.status(401).json({id: null, token: null, user: null, message: 'Incorrect login information'});
             return
-        }    
+        }
+        if (!userData.rows[0].pass) {
+            res.status(401).json({id: null, token: null, user: null, message: 'Incorrect login information'});
+            return
+        }
     } catch (err) {
         console.log(err);
         res.status(401).json({id: null, token: null, user: null});
