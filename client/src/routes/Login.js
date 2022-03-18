@@ -30,14 +30,15 @@ class LoginForm extends React.Component {
                 return;
             }
             await this.context.login(this.state.emailVal, this.state.passVal);
-        } catch {
+        } catch (err) {
+            console.log(err)
             alert('Incorrect login information!');
         }
     }
 
     render() {
         var next;
-        if (this.context.admin) {
+        if (this.context.admin === 'yes') {
             next = <Navigate to="/admin" replace />;
         } else if (this.context.authed) {
             next = <Navigate to="/home" replace />;

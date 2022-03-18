@@ -24,6 +24,7 @@ function getCardTitle(applied) {
 class Home extends React.Component {
   static contextType = AuthContext;
 
+
   async componentDidMount() {
       await this.context.hasApplied();
   }
