@@ -1,6 +1,5 @@
 import React from "react";
 import logo from '../FinalLogo.png';
-import Question from "../components/Question";
 import InfoCard from '../components/InfoCard';
 import axios from 'axios';
 import { AuthContext } from "../context/AuthContext";
