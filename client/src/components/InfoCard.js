@@ -7,9 +7,9 @@ class InfoCard extends React.Component {
         <div className="card w-75 mx-auto mt-3 pt-2 pb-4" style={{backgroundColor: "#EAEAEA"}}>
             <div className="card-body justify-content-center">
             <h2 className="card-title robotech-color p-1">{this.props.cardTitle}</h2>
-            <p className="card-text p-2">{this.props.cardText}</p>
+            <div>{this.props.cardText}</div>
             {this.props.linkTo &&
-                <Link to={this.props.linkRoute} className="btn btn-success robotech-bg">{this.props.linkTo}</Link>
+                <Link to={this.props.linkRoute} className="btn btn-success robotech-bg mt-2">{this.props.linkTo}</Link>
             }
             </div>
       </div>

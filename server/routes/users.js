@@ -9,7 +9,7 @@ const { RowDescriptionMessage } = require('pg-protocol/dist/messages');
 
 router.post('/', admin, async (req, res) => {
     try {
-        const data = await db.query("SELECT users.id, users.email, users.first_name, users.last_name, users.apply_id, users.accepted, applications.school FROM users LEFT JOIN applications ON users.apply_id = applications.id ORDER BY users.last_name;");
+        const data = await db.query("SELECT users.id, users.email, users.first_name, users.last_name, users.apply_id, users.accepted, users.rejected, applications.school FROM users LEFT JOIN applications ON users.apply_id = applications.id ORDER BY users.last_name;");
         res.status(200).send(data.rows);
     } catch (err) {
         console.log(err);
@@ -90,27 +90,27 @@ router.post('/hasInfo', auth, async (req, res) => {
 
 router.post('/name', admin, async (req, res) => {
     if (!req.body.userId) {
-        res.status(400);
+        res.status(400).send();
         return;
     }
     try {
         const userRow = await db.query('SELECT * FROM users WHERE id = $1;', [req.body.userId]);
         if (!userRow.rows[0]) {
-            res.status(400);
+            res.status(400).send();
             return;
         }
         res.status(200).json({first: userRow.rows[0].first_name, last: userRow.rows[0].last_name});
         return;
     } catch (err) {
         console.log(err)
-        res.status(500);
+        res.status(500).send();
         return;
     }
 })
 
 router.post('/applyData', admin, async (req, res) => {
     if (!req.body.userId) {
-        res.status(400);
+        res.status(400).send();
         return;
     }
     try {
@@ -125,14 +125,14 @@ router.post('/applyData', admin, async (req, res) => {
         return;
     } catch (err) {
         console.log(err)
-        res.status(500);
+        res.status(500).send();
         return;
     }
 })
 
 router.post('/accept', admin, async (req, res) => {
     if (!req.body.userId) {
-        res.status(400);
+        res.status(400).send();
         return;
     }
 
@@ -141,13 +141,13 @@ router.post('/accept', admin, async (req, res) => {
     try {
         const userRow = await db.query('SELECT * FROM users WHERE id = $1', [req.body.userId]);
         if (!userRow.rows[0]) {
-            res.status(400);
+            res.status(400).send();
             return;
         }
         userEmail = userRow.rows[0].email;
     } catch (err) {
         console.log(err);
-        res.status(400);
+        res.status(400).send();
         return;
     }
 
@@ -189,36 +189,103 @@ router.post('/accept', admin, async (req, res) => {
       };
     try {
         const data = await ses.send(new AWS.SendEmailCommand(params));
-        await db.query('UPDATE users SET accepted = true WHERE id = $1', [req.body.userId]);
+        await db.query('UPDATE users SET accepted = true, rejected = false WHERE id = $1', [req.body.userId]);
         res.status(200).send({success: true});
         return;
     } catch (err) {
         console.log(err);
-        res.status(400);
+        res.status(400).send();
         return;
     }
 })
 
-router.post('/checkAccept', admin, async (req, res) => {
+router.post('/checkAccept', auth, async (req, res) => {
     if (!req.body.userId) {
-        res.status(400);
+        res.status(400).send();
         return;
     }
     try {
         const userRow = await db.query('SELECT * FROM users WHERE id = $1', [req.body.userId]);
         if (!userRow.rows[0]) {
-            res.status(400);
-            return;
-        } else if (!userRow.rows[0].accepted) {
-            res.status(200).json({accepted: false});
+            res.status(400).send();
             return;
         } else {
-            res.status(200).json({accepted: true});
-            return;
+            res.status(200).send({accepted: userRow.rows[0].accepted, rejected: userRow.rows[0].rejected});
         }
     } catch (err) {
         console.log(err);
-        res.status(400);
+        res.status(400).send();
+        return;
+    }
+})
+
+router.post('/reject', admin, async (req, res) => {
+    if (!req.body.userId) {
+        res.status(400).send();
+        return;
+    }
+
+    var userEmail;
+
+    try {
+        const userRow = await db.query('SELECT * FROM users WHERE id = $1', [req.body.userId]);
+        if (!userRow.rows[0]) {
+            res.status(400).send();
+            return;
+        }
+        userEmail = userRow.rows[0].email;
+    } catch (err) {
+        console.log(err);
+        res.status(400).send();
+        return;
+    }
+
+    try {
+        await db.query('UPDATE users SET rejected = true WHERE id = $1', [req.body.userId]);
+        res.status(200).send({success: true});
+        return;
+    } catch (err) {
+        console.log(err);
+        res.status(500).send();
+        return;
+    }
+})
+
+router.post('/rsvp', auth, async (req, res) => {
+    if (!(req.body.in_person || req.body.virtual || req.body.not_attending || req.body.userId)) {
+        res.status(400).send();
+        return;
+    }
+
+    if ((req.body.in_person + req.body.virtual + req.body.not_attending) > 1) {
+        res.status(400).send();
+        return;
+    }
+
+    try {
+        await db.query('UPDATE users SET rsvp_in_person = $1, rsvp_virtual = $2, rsvp_not_attending = $3 WHERE id = $4', [req.body.in_person, req.body.virtual, req.body.not_attending, req.body.userId]);
+        res.status(200).send({success: true});
+        return;
+    } catch (err) {
+        console.log(err);
+        res.status(500).send();
+        return;
+    }
+})
+
+router.post('/getRsvp', auth, async (req, res) => {
+    if (!req.body.userId) {
+        res.status(400).send();
+        return;
+    }
+
+    try {
+        const response = await db.query('SELECT rsvp_in_person, rsvp_virtual, rsvp_not_attending FROM users WHERE id = $1', [req.body.userId]);
+        res.status(200).send({in_person: response.rows[0].rsvp_in_person, virtual: response.rows[0].rsvp_virtual, not_attending: response.rows[0].rsvp_not_attending,})
+        return;
+    } catch (err) {
+        console.log(err);
+        res.status(500).send();
         return;
     }
 })

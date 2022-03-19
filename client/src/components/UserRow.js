@@ -35,7 +35,7 @@ function appliedState(applied, accepted, rejected) {
             </div>
         )
     }
-    else {
+    else if (accepted) {
         return (
             <div className='row justify-content-center' style={{paddingTop: '7px', height: '24px'}}>
                 <span style={dotStyle('green')}/>
@@ -67,7 +67,7 @@ function UserRow(props) {
                 <p style={{paddingTop: '7px', height: '24px'}}>{props.user.email}</p>
             </div>
             <div className="col-3 text-center">
-                {appliedState(props.user.apply_id, props.user.accepted, false)}
+                {appliedState(props.user.apply_id, props.user.accepted, props.user.rejected)}
             </div>
             <div className="col-3 text-center">
                 {schoolState(props.user.school)}

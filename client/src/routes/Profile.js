@@ -13,6 +13,7 @@ function Profile() {
 
     let [applyState, setApplyState] = useState('init');
     let [acceptState, setAcceptState] = useState(false);
+    let [rejectState, setRejectState] = useState(false);
     let [error, setError] = useState(false);
 
     let [userName, setUserName] = useState({
@@ -47,8 +48,8 @@ function Profile() {
                 const acceptResponse = await axios.post('/api/users/checkAccept', {userId: params.userId, token: token, id: authId});
                 if (acceptResponse.data.accepted) {
                     setAcceptState(true);
-                } else {
-                    setAcceptState(false);
+                } else if (acceptResponse.data.rejected) {
+                    setRejectState(true);
                 }
             } catch (err) {
                 setError(true);
@@ -69,6 +70,19 @@ function Profile() {
             setAcceptState(true);
         } catch {
             alert('Error accepting this participant');
+        }
+    }
+
+    let handleReject = async () => {
+        if (acceptState) {
+            alert('This user has already been accepted!');
+            return;
+        }
+        try {
+            await axios.post('/api/users/reject', {userId: params.userId, token: token, id: authId});
+            setRejectState(true);
+        } catch {
+            alert('Error rejecting this participant');
         }
     }
 
@@ -93,10 +107,13 @@ function Profile() {
             <hr></hr>
             <div>
                 <h1>{userName.first + ' ' + userName.last}</h1>
-                <h4 className="mb-4">{appliedState((applyState === 'yes'), acceptState, 0)}</h4>
+                <h4 className="mb-4">{appliedState((applyState === 'yes'), acceptState, rejectState)}</h4>
             </div>
             {(applyState === 'yes') && 
-            <button type="submit" class="btn robotech-bg my-3" onClick={handleAccept} >Accept</button>
+            <div>
+                <button type="submit" class="btn robotech-bg my-3" onClick={handleAccept} >Accept</button> <br/>
+                <button type="submit" class="btn robotech-bg my-3" onClick={handleReject} >Reject</button>
+            </div>
             }
             {appComponent}
         </div>

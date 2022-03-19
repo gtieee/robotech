@@ -2,15 +2,16 @@ import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import {Routes, Route, Navigate} from "react-router-dom";
-import Home from './routes/Home.js';
-import Apply from './routes/Apply.js';
-import Login from './routes/Login.js';
-import Register from './routes/Register.js';
-import Coming from './routes/Coming.js';
-import Profile from './routes/Profile.js';
-import Dashboard from './routes/Dashboard.js';
-import RequestReset from './routes/RequestReset.js';
-import ResetForm from './routes/Reset.js';
+import Home from './routes/Home';
+import Apply from './routes/Apply';
+import Login from './routes/Login';
+import Register from './routes/Register';
+import Coming from './routes/Coming';
+import Profile from './routes/Profile'
+import Dashboard from './routes/Dashboard';
+import RequestReset from './routes/RequestReset';
+import ResetForm from './routes/Reset';
+import RSVP from './routes/RSVP';
 import { AuthProvider, AuthContext } from './context/AuthContext';
 import RequireAuth from './context/RequireAuth';
 import RequireAdmin from './context/RequireAdmin';
@@ -38,6 +39,11 @@ function App() {
             <Route path="/team" element={
               <RequireAuth>
                 <Coming /> 
+              </RequireAuth>} />
+
+              <Route path="/rsvp" element={
+              <RequireAuth>
+                <RSVP /> 
               </RequireAuth>} />
 
             <Route path="/events" element={

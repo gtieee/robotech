@@ -96,7 +96,7 @@ router.post('/requestUpdate', async (req, res) => {
               // edit this to change email body
               Data: "<div>Hello,</div>" +
                     "<br><div>A request to reset your password has been made. If you made this request, click the link below to continue.</div>"+
-                    "<br><div><a href=hack.gt-robotech.com/reset/" + resetToken + ">Password Reset</a>" +
+                    `<br><div><a href='hack.gt-robotech.com/reset/${resetToken}'>Password Reset</a>` +
                     "<br><br><div>If the above link does not work, copy and paste the URL below into your browser: hack.gt-robotech.com/reset/" + resetToken + "</div>" + 
                     "<br><div>If you did not make this request, or you have any other problems, please contact us at gatechieee@gmail.com.</div>" + 
                     "<br><div>Best,</div>" + 
@@ -148,12 +148,12 @@ router.post('/update', async (req, res) => {
         return;
     }
 
-    var tokenTimeStamp = new Date(resetRow.rows[0].time);
+    /*var tokenTimeStamp = new Date(resetRow.rows[0].time);
     tokenTimeStamp.setHours(tokenTimeStamp.getHours() - 4); // time zone correction
     var currTimeStamp = new Date();
-    const twoHoursToMS = 7200000;
+    const twoHoursToMS = 7200000;*/
 
-    if (((currTimeStamp.getTime() - tokenTimeStamp.getTime()) > twoHoursToMS) || resetRow.rows[0].expired) {
+    if (resetRow.rows[0].expired) {
         res.status(200).send({success: false, message: 'This reset token is expired! Please request a new one'});
         return;
     }

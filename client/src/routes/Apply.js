@@ -1,8 +1,10 @@
 import React from "react";
 import logo from '../FinalLogo.png';
 import InfoCard from '../components/InfoCard';
+import Nav from '../components/Nav'
 import axios from 'axios';
 import { AuthContext } from "../context/AuthContext";
+import { Link } from 'react-router-dom';
 
 class Apply extends React.Component {
   constructor(props) {
@@ -106,6 +108,13 @@ class Apply extends React.Component {
 
   render() {
 
+    const acceptedElement = (
+      <div>
+        <p className="card-text p-2">Congratulations on your acceptance to RoboTech 2022! We hope to see you on April 1st!</p>
+        <p className="card-text p-2">In the meantime, make sure to <a href="https://discord.gg/qWVz9ghb">join the discord</a> as well as <Link to="/rsvp">RSVP</Link></p>
+      </div>
+    )
+
     return (
       <div className="container">
         <div className="App container">
@@ -203,9 +212,17 @@ class Apply extends React.Component {
           </form>
         </div>}
 
-        {!this.state.error && this.context.applied &&
+        {!this.state.error && this.context.applied && !this.context.accepted && 
           <div className="container App">
+            <Nav />
             <InfoCard cardTitle='Thank You!' cardText='Thank you submitting your application! Please be patient as we make our admissions decisions.' linkTo='Home' linkRoute='/home' /> 
+          </div>
+        }
+
+        {!this.state.error && this.context.applied && this.context.accepted && 
+          <div className="container App">
+            <Nav />
+            <InfoCard cardTitle='Congrats!' cardText={acceptedElement} linkTo='Home' linkRoute='/home' /> 
           </div>
         }
       </div>

@@ -6,12 +6,16 @@ export const AuthContext = React.createContext({
     authed: false,
     admin: 'wait',
     applied: false,
+    rsvp: 'none',
     login: async () => {},
     logout: () => {},
     isAdmin: async () => {},
     isAuthed: async () => {},
     hasApplied: async () => {},
-    getSelection: async () => {}
+    setApplied: () => {},
+    getAppState: async () => {},
+    getRSVPState: async () => {},
+    setRSVPState: () => {}
 })
 
 export function AuthProvider({ children }) {
@@ -21,6 +25,7 @@ export function AuthProvider({ children }) {
     var [applied, setAppliedState] = useState(false);
     var [accepted, setAccepted] = useState(false);
     var [rejected, setRejected] = useState(false);
+    var [rsvp, setRSVP] = useState('none');
 
     const login = async (user, password) => {
         const response = await axios.post('/api/login', {email: user, pass: password});
@@ -121,11 +126,56 @@ export function AuthProvider({ children }) {
     }
 
     const getAppState = async () => {
+        try {
+            const response = await axios.post('/api/users/checkAccept', {token: localStorage.getItem('token'), userId: localStorage.getItem('id')});
+            if (response.data.accepted) {
+                setAccepted(true);
+            }
+            else if (response.data.rejected) {
+                setRejected(true);
+            }
+        } catch {
+            setRejected(false);
+            setAccepted(false);
+        }
+        
+    }
 
+    const getRSVPState = async () => {
+        try {
+            const response = await axios.post('/api/users/getRsvp', {token: localStorage.getItem('token'), userId: localStorage.getItem('id')});
+            if (response.data.in_person) {
+                setRSVP('in-person');
+            } else if (response.data.virtual) {
+                setRSVP('virtual');
+            } else if (response.data.not_attending) {
+                setRSVP('not-attending');
+            } else {
+                setRSVP('none');
+            }
+        } catch {
+            setRSVP('none');
+        }
+    }
+
+    const setRSVPState = (state) => {
+        switch (state) {
+            case 'in-person':
+                setRSVP('in-person');
+                break;
+            case 'virtual':
+                setRSVP('virtual');
+                break;
+            case 'not-attending':
+                setRSVP('not-attending');
+                break;
+            default:
+                setRSVP('none');
+        }
     }
 
 
-    var contextValue = {user, authed, admin, applied, accepted, rejected, login, logout, isAuthed, isAdmin, hasApplied, setApplied, getAppState};
+    var contextValue = {user, authed, admin, applied, accepted, rejected, rsvp, login, logout, isAuthed, isAdmin, hasApplied, setApplied, getAppState, getRSVPState, setRSVPState};
 
     return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
 }

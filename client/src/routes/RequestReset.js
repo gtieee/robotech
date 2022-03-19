@@ -80,7 +80,7 @@ class RequestReset extends React.Component {
                                 <input className="form-rt form-control mb-2" type="text" name="confirm" id="confirmForm" placeholder="Confirm Email" value={this.state.passVal} onChange={this.handleChange}/>
                             </div>
                         <p className="p-rt">
-                           <Link to='/register' className="link">Return to Log In</Link>
+                           <Link to='/login' className="link">Return to Log In</Link>
                         </p>
                         <button type="submit" className="button-rt btn robotech-bg">SEND</button>
                             {this.context.authed && <Navigate to="/home" replace />}
