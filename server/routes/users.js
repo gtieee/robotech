@@ -9,7 +9,7 @@ const { RowDescriptionMessage } = require('pg-protocol/dist/messages');
 
 router.post('/', admin, async (req, res) => {
     try {
-        const data = await db.query("SELECT users.id, users.email, users.first_name, users.last_name, users.apply_id, users.accepted, users.rejected, applications.school FROM users LEFT JOIN applications ON users.apply_id = applications.id ORDER BY users.last_name;");
+        const data = await db.query("SELECT users.id, users.email, users.first_name, users.last_name, users.apply_id, users.accepted, users.rejected, users.rsvp_in_person, users.rsvp_virtual, users.rsvp_not_attending, applications.school FROM users LEFT JOIN applications ON users.apply_id = applications.id ORDER BY users.last_name;");
         res.status(200).send(data.rows);
     } catch (err) {
         console.log(err);
