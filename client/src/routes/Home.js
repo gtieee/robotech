@@ -19,8 +19,11 @@ function getCardText(applied, accepted, rejected) {
   if (applied) {
     return <p className="card-text p-2">Thank you submitting your application! Please be patient as we make our admissions decisions.</p>
   }
-  else {
+  else if (false) {
     return <p className="card-text p-2">RoboTech is now accepting applications! Follow the link below to submit your application to participate!</p>
+  }
+  else {
+    return <p>Applications for RoboTech 2022 are currently closed!</p>
   }
 }
 
@@ -31,8 +34,11 @@ function getCardTitle(applied, accepted, rejected) {
   if (applied) {
     return "Thank You!"
   }
-  else {
+  else if (false) {
     return "Apply Now!"
+  }
+  else {
+    return "Applications Closed"
   }
 }
 
@@ -53,7 +59,7 @@ class Home extends React.Component {
         <h1 className="pt-2 robotech-color">My Robotech</h1>
         <hr></hr>
         <Nav />
-        <InfoCard cardTitle={getCardTitle(this.context.applied, this.context.accepted, this.context.rejected)} cardText={getCardText(this.context.applied, this.context.accepted, this.context.rejected)} linkTo={!this.context.applied && 'Apply'} linkRoute='/apply' /> 
+        <InfoCard cardTitle={getCardTitle(this.context.applied, this.context.accepted, this.context.rejected)} cardText={getCardText(this.context.applied, this.context.accepted, this.context.rejected)} linkRoute='/apply' /> 
         <button type="submit" className="btn robotech-bg mt-3" onClick={this.context.logout}>Logout</button>
       </div>
     )
