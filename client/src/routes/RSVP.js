@@ -49,6 +49,10 @@ class RSVP extends React.Component {
 
   async handleSubmit(event) {
     event.preventDefault();
+    if (!(this.state.in_person || this.state.virtual || this.state.not_attending)) {
+      alert('Please select an option!');
+      return;
+    }
     if ((this.state.in_person + this.state.virtual + this.state.not_attending) > 1) {
       alert('Please select only one option!');
       return;

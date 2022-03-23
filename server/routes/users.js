@@ -252,7 +252,7 @@ router.post('/reject', admin, async (req, res) => {
 })
 
 router.post('/rsvp', auth, async (req, res) => {
-    if (!(req.body.in_person || req.body.virtual || req.body.not_attending || req.body.userId)) {
+    if (!(req.body.in_person || req.body.virtual || req.body.not_attending) || !req.body.userId) {
         res.status(400).send();
         return;
     }
