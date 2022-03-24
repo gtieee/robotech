@@ -69,6 +69,7 @@ class RSVP extends React.Component {
       else if (this.state.not_attending) {
         this.context.setRSVPState('not-attending');
       }
+      alert('Thank you for sending your RSVP!');
     } catch (err) {
       alert('Failed to record your RSVP! Please try again later!');
     }
