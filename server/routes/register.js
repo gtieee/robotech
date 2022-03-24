@@ -62,7 +62,7 @@ router.post('/requestUpdate', async (req, res) => {
     try {
         bcrypt.hash(resetToken, 10, async (err, hash) => {
             if (inResets) {
-                await db.query('UPDATE resets SET token = $1, expired = false, time = CURRENT_TIMESTAMP;', [hash]);
+                await db.query('UPDATE resets SET token = $1, expired = false, time = CURRENT_TIMESTAMP WHERE email = $2;', [hash, req.body.email]);
             } else {
                 await db.query('INSERT INTO resets (email, token, time) VALUES ($1, $2, CURRENT_TIMESTAMP);', [req.body.email, hash]);
             }
