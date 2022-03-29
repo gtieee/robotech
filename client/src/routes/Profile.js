@@ -1,9 +1,7 @@
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { useParams } from 'react-router-dom';
-import { AuthContext } from "../context/AuthContext";
 import logo from '../FinalLogo.png';
-//http://localhost:3000/users/01af9253-a0c7-4ea5-9378-a243a5491baf
 
 
 function Profile() {

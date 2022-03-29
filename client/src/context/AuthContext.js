@@ -5,12 +5,14 @@ export const AuthContext = React.createContext({
     user: null,
     authed: false,
     admin: 'wait',
+    volunteer: 'wait',
     applied: false,
     rsvp: 'none',
     login: async () => {},
     logout: () => {},
     isAdmin: async () => {},
     isAuthed: async () => {},
+    isVolunteer: async () => {},
     hasApplied: async () => {},
     setApplied: () => {},
     getAppState: async () => {},
@@ -22,6 +24,7 @@ export function AuthProvider({ children }) {
     var [user, setUser] = useState(null);
     var [authed, setAuthed] = useState(false);
     var [admin, setAdmin] = useState('wait');
+    var [volunteer, setVolunteer] = useState('wait');
     var [applied, setAppliedState] = useState(false);
     var [accepted, setAccepted] = useState(false);
     var [rejected, setRejected] = useState(false);
@@ -39,6 +42,12 @@ export function AuthProvider({ children }) {
             }
             else {
                 setAdmin('no');
+            }
+            if (response.data.volunteer) {
+                setVolunteer('yes');
+            }
+            else {
+                setVolunteer('no');
             }
             localStorage.setItem('token', response.data.token);
             localStorage.setItem('user', response.data.user);
@@ -104,6 +113,29 @@ export function AuthProvider({ children }) {
                 }
             } catch (err) {
                 setAdmin('no');
+            }
+        }
+    }
+
+    const isVolunteer = async () => {
+        const currToken = localStorage.getItem('token');
+        const currUser = localStorage.getItem('id');
+        if (!currToken) {
+            setVolunteer('no');
+        } else {
+            try {
+                const response = await axios.post('/api/users/checkVolunteer', {token: currToken, id: currUser});
+                if (response.data.volunteer) {
+                    setUser(currUser);
+                    setAuthed(true);
+                    setVolunteer('yes');
+                    return true;
+                } else {
+                    setVolunteer('no');
+                    return false;
+                }
+            } catch (err) {
+                setVolunteer('no');
             }
         }
     }
@@ -175,7 +207,7 @@ export function AuthProvider({ children }) {
     }
 
 
-    var contextValue = {user, authed, admin, applied, accepted, rejected, rsvp, login, logout, isAuthed, isAdmin, hasApplied, setApplied, getAppState, getRSVPState, setRSVPState};
+    var contextValue = {user, authed, admin, volunteer, applied, accepted, rejected, rsvp, login, logout, isAuthed, isAdmin, isVolunteer, hasApplied, setApplied, getAppState, getRSVPState, setRSVPState};
 
     return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
 }

@@ -12,10 +12,13 @@ import Dashboard from './routes/Dashboard';
 import RequestReset from './routes/RequestReset';
 import ResetForm from './routes/Reset';
 import RSVP from './routes/RSVP';
-import { AuthProvider, AuthContext } from './context/AuthContext';
+import CheckIn from './routes/CheckIn';
+import CheckInUser from './routes/CheckInUser';
+import AdminHome from './routes/AdminHome';
+import { AuthProvider } from './context/AuthContext';
 import RequireAuth from './context/RequireAuth';
 import RequireAdmin from './context/RequireAdmin';
-import { useContext, useEffect, useState } from 'react';
+import RequireVolunteer from './context/RequireVolunteer';
 
 function App() {
     return (
@@ -59,6 +62,25 @@ function App() {
               <Route index element={<RequestReset />} />
               <Route path=":token" element={<ResetForm />} />
             </Route> 
+
+            <Route path="/volunteer">
+              <Route index element={
+                <RequireVolunteer>
+                  <CheckIn />
+                </RequireVolunteer> }>
+              </Route>
+              
+              <Route path=":userId" element={
+                <RequireVolunteer>
+                  <CheckInUser/>
+                </RequireVolunteer> }>  
+              </Route>    
+            </Route>       
+
+            <Route path="/adminHome" element={
+              <RequireAdmin>
+                  <AdminHome /> 
+              </RequireAdmin>} />
 
             <Route path="/admin">
               <Route index element={

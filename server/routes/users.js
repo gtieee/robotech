@@ -1,6 +1,7 @@
 const express = require('express');
 const auth = require('../middleware/auth.js');
 const admin = require('../middleware/admin.js');
+const volunteer = require('../middleware/volunteer.js');
 const AWS = require('@aws-sdk/client-ses');
 var router = express.Router();
 
@@ -39,7 +40,19 @@ router.post('/stats', admin, async (req, res) => {
         res.status(500).send('Failed to fetch from users database');
         return;
     }
-
+    try {
+        data.in_person = (await db.query("SELECT * FROM users WHERE rsvp_in_person = true;")).rows.length;
+    } catch {
+        res.status(500).send('Failed to fetch from users database');
+        return;
+    }
+    try {
+        data.virtual = (await db.query("SELECT * FROM users WHERE rsvp_virtual = true;")).rows.length;
+    } catch {
+        res.status(500).send('Failed to fetch from users database');
+        return;
+    }
+    data.rsvp = data.in_person + data.virtual
     res.status(200).send(data);
 
 })
@@ -62,12 +75,26 @@ router.post('/exists', async (req, res) => {
     }
 })
 
+router.post('/accepted', volunteer, async (req, res) => {
+    try {
+        const response = await db.query("SELECT * FROM users WHERE accepted = true ORDER BY last_name");
+        res.status(200).send(response.rows);
+    } catch (err) {
+        console.log(error);
+        res.status(500).send();
+    }
+})
+
 router.get('/checkAuth', auth, async (req, res) => {
     res.status(200).send({authed: true});
 })
 
 router.post('/checkAdmin', admin, async (req, res) => {
     res.status(200).send({admin: true});
+})
+
+router.post('/checkVolunteer', volunteer, async (req, res) => {
+    res.status(200).send({volunteer: true});
 })
 
 router.post('/hasInfo', auth, async (req, res) => {
@@ -287,6 +314,39 @@ router.post('/getRsvp', auth, async (req, res) => {
         console.log(err);
         res.status(500).send();
         return;
+    }
+})
+
+router.post('/checkedIn', volunteer, async (req, res) => {
+    if (!req.body.userId) {
+        res.status(400).send();
+        return;
+    }
+
+    try {
+        const response = await db.query("SELECT * FROM users WHERE id = $1", [req.body.userId])
+        res.status(200).send({checkedIn: response.rows[0].checkin});
+        return;
+    } catch (err) {
+        console.log(err);
+        res.status(500).send();
+        return;
+    }
+})
+
+router.post('/checkIn', volunteer, async (req, res) => {
+    if (!req.body.userId) {
+        res.status(400).send({success: false});
+        return;
+    }
+
+    try {
+        await db.query("UPDATE users SET checkin = true WHERE id = $1", [req.body.userId]);
+        res.status(200).send({success: true});
+        return;
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({success: false});
     }
 })
 
