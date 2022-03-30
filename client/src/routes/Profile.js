@@ -12,7 +12,9 @@ function Profile() {
     let [applyState, setApplyState] = useState('init');
     let [acceptState, setAcceptState] = useState(false);
     let [rejectState, setRejectState] = useState(false);
+    let [role, setRole] = useState(0);
     let [error, setError] = useState(false);
+    let [fetched, setFetched] = useState(false)
 
     let [userName, setUserName] = useState({
         first: '',
@@ -34,13 +36,15 @@ function Profile() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const nameResponse = await axios.post('/api/users/name', {userId: params.userId, token: token, id: authId});
-                setUserName(nameResponse.data);
+                const userResponse = await axios.post('/api/users/user', {userId: params.userId, token: token, id: authId});
+                setUserName({first: userResponse.data.first_name, last: userResponse.data.last_name});
+                setRole(userResponse.data.role);
                 const appResponse = await axios.post('/api/users/hasInfo', {userId: params.userId, token: token, id: authId});
                 if (appResponse.data.hasInfo) {
                     setApplyState('yes');
                 } else {
                     setApplyState('no');
+                    setFetched(true);
                     return;
                 }
                 const acceptResponse = await axios.post('/api/users/checkAccept', {userId: params.userId, token: token, id: authId});
@@ -49,6 +53,7 @@ function Profile() {
                 } else if (acceptResponse.data.rejected) {
                     setRejectState(true);
                 }
+                setFetched(true);
             } catch (err) {
                 setError(true);
             }
@@ -84,6 +89,15 @@ function Profile() {
         }
     }
 
+    let handleVolunteer = async () => {
+        try {
+            await axios.post('/api/users/setVolunteer', {userId: params.userId, token: token, id: authId});
+            setRole(2);
+        } catch {
+            alert('Error setting volunteer!');
+        }
+    }
+
     var appComponent;
     if (error) {
         appComponent = <h4>Failed to get this user's application data</h4>
@@ -103,16 +117,21 @@ function Profile() {
             <img src={logo} className="img-fluid col-2"></img>
             <h1 className="pt-2 robotech-color">User Profile</h1>
             <hr></hr>
+            {fetched && (
+                <div>
+                    <h1>{userName.first + ' ' + userName.last}</h1>
+                    <h4 className="mb-4">{appliedState((applyState === 'yes'), acceptState, rejectState)}</h4>
+                    <h4 className="mb-4">{'Role: ' + getRole(role)}</h4>
+                </div>
+            )}
+
+            {fetched && (applyState === 'yes') && 
             <div>
-                <h1>{userName.first + ' ' + userName.last}</h1>
-                <h4 className="mb-4">{appliedState((applyState === 'yes'), acceptState, rejectState)}</h4>
-            </div>
-            {(applyState === 'yes') && 
-            <div>
-                <button type="submit" class="btn robotech-bg my-3" onClick={handleAccept} >Accept</button> <br/>
-                <button type="submit" class="btn robotech-bg my-3" onClick={handleReject} >Reject</button>
+                <button type="submit" class="btn robotech-bg my-2" onClick={handleAccept} >Accept</button> <br/>
+                <button type="submit" class="btn robotech-bg my-2" onClick={handleReject} >Reject</button> <br/>
             </div>
             }
+            <button type="submit" class="btn robotech-bg my-2" onClick={handleVolunteer} >Set Volunteer</button>
             {appComponent}
         </div>
     )
@@ -211,6 +230,21 @@ function appliedState(applied, accepted, rejected) {
                 <p className='col-2'>Accepted</p>
             </div>
         )
+    }
+}
+
+function getRole(role) {
+    switch (role) {
+        case 0:
+            return 'Participant';
+        case 1:
+            return 'Admin';
+        case 2:
+            return 'Volunteer';
+        case 3:
+            return 'Judge';
+        default:
+            return 'Error';
     }
 }
 

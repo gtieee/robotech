@@ -57,6 +57,22 @@ router.post('/stats', admin, async (req, res) => {
 
 })
 
+router.post('/user', admin, async (req, res) => {
+    if (!req.body.userId) {
+        res.status(400).send();
+        return;
+    }
+
+    try {
+        const response = await db.query("SELECT * FROM users WHERE id = $1", [req.body.userId]);
+        res.status(200).send(response.rows[0]);
+        return;
+    } catch (err) {
+        console.log(err);
+        res.status(500).send();
+    }
+})
+
 router.post('/exists', async (req, res) => {
     if (!req.body.email) {
         res.status(400).json({exists: false})
@@ -115,7 +131,7 @@ router.post('/hasInfo', auth, async (req, res) => {
     }
 })
 
-router.post('/name', admin, async (req, res) => {
+router.post('/name', auth, async (req, res) => {
     if (!req.body.userId) {
         res.status(400).send();
         return;
@@ -317,7 +333,7 @@ router.post('/getRsvp', auth, async (req, res) => {
     }
 })
 
-router.post('/checkedIn', volunteer, async (req, res) => {
+router.post('/checkedIn', auth, async (req, res) => {
     if (!req.body.userId) {
         res.status(400).send();
         return;
@@ -334,7 +350,7 @@ router.post('/checkedIn', volunteer, async (req, res) => {
     }
 })
 
-router.post('/checkIn', volunteer, async (req, res) => {
+router.post('/checkIn', auth, async (req, res) => {
     if (!req.body.userId) {
         res.status(400).send({success: false});
         return;
@@ -342,6 +358,22 @@ router.post('/checkIn', volunteer, async (req, res) => {
 
     try {
         await db.query("UPDATE users SET checkin = true WHERE id = $1", [req.body.userId]);
+        res.status(200).send({success: true});
+        return;
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({success: false});
+    }
+})
+
+router.post('/setVolunteer', admin, async (req, res) => {
+    if (!req.body.userId) {
+        res.status(400).send({success: false});
+        return;
+    }
+
+    try {
+        await db.query("UPDATE users SET role = 2 WHERE id = $1", [req.body.userId]);
         res.status(200).send({success: true});
         return;
     } catch (err) {

@@ -14,6 +14,7 @@ import ResetForm from './routes/Reset';
 import RSVP from './routes/RSVP';
 import CheckIn from './routes/CheckIn';
 import CheckInUser from './routes/CheckInUser';
+import CheckInTab from './routes/CheckInTab';
 import AdminHome from './routes/AdminHome';
 import { AuthProvider } from './context/AuthContext';
 import RequireAuth from './context/RequireAuth';
@@ -32,7 +33,7 @@ function App() {
             <Route path="/home" element={
               <RequireAuth>
                 <Home /> 
-              </RequireAuth>} />
+              </RequireAuth>}/>
 
             <Route path="/apply" element={
               <RequireAuth>
@@ -48,6 +49,11 @@ function App() {
               <RequireAuth>
                 <RSVP /> 
               </RequireAuth>} />
+
+              <Route path="/checkInTab" element={
+                <RequireAuth>
+                  <CheckInTab />
+                </RequireAuth>} />
 
             <Route path="/events" element={
               <RequireAuth>

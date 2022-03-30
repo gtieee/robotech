@@ -6,7 +6,8 @@ import axios from 'axios';
 class Dashboard extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {registered: 0, applied: 0, accepted: 0, rsvp: 0, in_person: 0, virtual: 0, users: []};
+        this.state = {registered: 0, applied: 0, accepted: 0, rsvp: 0, in_person: 0, virtual: 0, searchVal: '', users: []};
+        this.handleChange = this.handleChange.bind(this);
     }
 
     async componentDidMount() {
@@ -21,12 +22,25 @@ class Dashboard extends React.Component {
         }
     }
 
+    handleChange(event) {
+        this.setState({searchVal: event.target.value.toLowerCase()});
+    }
+
     render() {
+        var filteredUsers = this.state.users.filter(user => {
+            if (!this.state.searchVal) {
+                return user;
+            }
+            else {
+                return (user.first_name + ' ' + user.last_name).toLowerCase().includes(this.state.searchVal) || (user.email).toLowerCase().includes(this.state.searchVal);
+            }
+        })
+
         var userComponents;
         if (!this.state.users) {
             userComponents = <h4>Failed to fetch user data</h4>;
         } else {
-            userComponents = this.state.users.map(user => <UserRow user={user} key={user.id}/>)
+            userComponents = filteredUsers.map(user => <UserRow user={user} key={user.id}/>)
         }
 
         return (
@@ -45,6 +59,9 @@ class Dashboard extends React.Component {
                         <h4 className='p-1'>{'RSVPs: ' + this.state.rsvp}</h4>
                         <h4 className='p-1'>{'In Person: ' + this.state.in_person + '/' + this.state.rsvp}</h4>
                         <h4 className='p-1'>{'Virtual: ' + this.state.virtual + '/' + this.state.rsvp}</h4>
+                        <div className="mx-auto mb-3" style={{width: '400px'}}>
+                            <input type="text" name="search" className="form-control" value={this.state.searchVal} onChange={this.handleChange} placeholder={'Search'}/>
+                        </div>
                     </div>
                     {userComponents}
                 </div>            

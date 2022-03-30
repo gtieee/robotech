@@ -41,7 +41,7 @@ class LoginForm extends React.Component {
         if (this.context.admin === 'yes') {
             next = <Navigate to="/adminHome" replace />;
         } else if (this.context.volunteer === 'yes') {
-            next = <Navigate to="volunteer" replace />;
+            next = <Navigate to="/volunteer" replace />;
         } else if (this.context.authed) {
             next = <Navigate to="/home" replace />;
         }

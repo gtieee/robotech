@@ -11,6 +11,9 @@ function Nav() {
                 <h5><Link to="/rsvp" class="nav-link" style={{color: "grey"}}>RSVP</Link></h5>
             </li>
             <li class="nav-item col-sm-2">
+                <h5><Link to="/checkInTab" class="nav-link" style={{color: "grey"}}>Check-In</Link></h5>
+            </li>
+            <li class="nav-item col-sm-2">
                 <h5><Link to="/events" class="nav-link" style={{color: "grey"}}>Events</Link></h5>
             </li>
         </ul>
