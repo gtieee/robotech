@@ -19,10 +19,10 @@ function getCardText(applied, accepted, rejected) {
   if (applied) {
     return <p className="card-text p-2">Thank you submitting your application! Please be patient as we make our admissions decisions.</p>
   }
-  else if (false) {
+  else if (true) {
     return <p className="card-text p-2">RoboTech is now accepting applications! Follow the link below to submit your application to participate!</p>
   }
-  else {
+  else if (false) {
     return <p>Applications for RoboTech 2022 are currently closed!</p>
   }
 }
@@ -34,10 +34,10 @@ function getCardTitle(applied, accepted, rejected) {
   if (applied) {
     return "Thank You!"
   }
-  else if (false) {
+  else if (true) {
     return "Apply Now!"
   }
-  else {
+  else if (false) {
     return "Applications Closed"
   }
 }

@@ -125,13 +125,13 @@ class Apply extends React.Component {
         {this.state.error && 
         <h4>Failed to communicate with server, please try again later!</h4>}
 
-        {!this.context.applied &&
+        {!this.context.applied && false &&
           <div className="container App">
             <InfoCard cardTitle='Application Closed!' cardText='Applications for RoboTech 2022 are currently closed!' linkTo='Home' linkRoute='/home' /> 
           </div>
         }
 
-        {!this.state.error && !this.context.applied && false &&
+        {!this.state.error && !this.context.applied  &&
         <div className="container w-75">
           <form>
             <label className="form-label">First Name</label>
