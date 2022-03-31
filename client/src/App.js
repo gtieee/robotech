@@ -16,6 +16,7 @@ import CheckIn from './routes/CheckIn';
 import CheckInUser from './routes/CheckInUser';
 import CheckInTab from './routes/CheckInTab';
 import AdminHome from './routes/AdminHome';
+import Events from './routes/Events';
 import { AuthProvider } from './context/AuthContext';
 import RequireAuth from './context/RequireAuth';
 import RequireAdmin from './context/RequireAdmin';
@@ -57,7 +58,7 @@ function App() {
 
             <Route path="/events" element={
               <RequireAuth>
-                <Coming /> 
+                <Events /> 
               </RequireAuth>} />
 
             <Route path="/login" element={<Login />} />
