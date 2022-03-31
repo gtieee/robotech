@@ -2,6 +2,7 @@ import logo from '../FinalLogo.png';
 import { Link } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext';
 import { useContext } from 'react';
+import axios from 'axios';
 
 function AdminHome() {
     var auth = useContext(AuthContext);
@@ -16,9 +17,20 @@ function AdminHome() {
             <br />
             <Link to={'/home'} className="btn robotech-bg mt-4">Participant Home</Link>
             <br />
+            <button type="submit" className="btn robotech-bg mt-4" onClick={submit}>Pull Submissions</button>
+            <br />
             <button type="submit" className="btn robotech-bg mt-4" onClick={auth.logout}>Logout</button>
         </div>
     )
+}
+
+async function submit() {
+    try {
+        await axios.post('/api/submissions/update', {id: localStorage.getItem('id'), token: localStorage.getItem('token')});
+        alert('Success');
+    } catch {
+        alert('Something went wrong!');
+    }
 }
 
 export default AdminHome;
