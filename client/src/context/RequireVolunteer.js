@@ -13,7 +13,7 @@ function RequireVolunteer({children}) {
       }
       checkVolunteer();
     }, [])
-    if (!(auth.admin === 'yes' || auth.volunteer === 'yes')) {
+    if (auth.admin === 'no' && auth.volunteer === 'no') {
       return <Navigate to='/home' replace />
     } else {
       return children;
