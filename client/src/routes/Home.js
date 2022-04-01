@@ -61,6 +61,14 @@ class Home extends React.Component {
         <Nav />
         <InfoCard cardTitle={getCardTitle(this.context.applied, this.context.accepted, this.context.rejected)} cardText={getCardText(this.context.applied, this.context.accepted, this.context.rejected)} linkRoute='/apply' /> 
         <button type="submit" className="btn robotech-bg mt-3" onClick={this.context.logout}>Logout</button>
+        <br/>
+        {(this.context.admin === 'yes' )&&
+          <Link to={'/adminHome'} className="btn robotech-bg mt-4">Admin Home</Link>
+        }
+        <br/>
+        {(this.context.volunteer === 'yes') && 
+          <Link to={'/volunteer'} className="btn robotech-bg mt-4">Volunteer Home</Link>
+        }
       </div>
     )
   }
