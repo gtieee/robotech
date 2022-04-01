@@ -10,7 +10,7 @@ function CheckInUser() {
 
     const handleClick = async () => {
         try {
-            const response = await axios.post('/api/users/checkIn', {userId: params.userId, token: localStorage.getItem('token'), id: localStorage.getItem('id')});
+            const response = await axios.post('/api/users/checkIn', {userId: params.userId, token: localStorage.getItem('token'), id: localStorage.getItem('id'), virtual: false});
             if (response.data.success) {
                 setCheckedIn(true);
                 alert('Success!');

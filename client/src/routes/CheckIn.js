@@ -16,7 +16,7 @@ class CheckIn extends React.Component {
 
     async componentDidMount() {
         try {
-            const data = await axios.post('/api/users/accepted', {token: localStorage.getItem('token'), id: localStorage.getItem('id')});
+            const data = await axios.post('/api/users/rsvpUsers', {token: localStorage.getItem('token'), id: localStorage.getItem('id')});
             this.setState({users: data.data});
         } catch {
             this.setState({users: []});
@@ -61,7 +61,7 @@ function Participant(props) {
         <div className="row my-2 w-75 mx-auto" style={{backgroundColor: "#EAEAEA", borderRadius: "5px"}}>
             <div className="col-12 text-center">
                 <Link to={'/volunteer/' + props.user.id + '?first=' + props.user.first_name + '&last=' + props.user.last_name} className='nav-link' style={{color: 'black'}}>{props.user.first_name + ' ' + props.user.last_name + 
-                ' - ' + (props.user.checkin ? 'Yes' : 'No')}</Link>
+                ' - ' + ((props.user.checkin || props.user.checkin_virtual) ? 'Yes' : 'No')}</Link>
             </div>
         </div>
     )

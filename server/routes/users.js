@@ -333,6 +333,16 @@ router.post('/getRsvp', auth, async (req, res) => {
     }
 })
 
+router.post('/rsvpUsers', volunteer, async (req, res) => {
+    try {
+        const response = await db.query('SELECT * FROM users WHERE rsvp_in_person = true OR rsvp_virtual = true');
+        return res.status(200).send(response.rows);
+    } catch (err) {
+        console.log(err);
+        return res.status(500).send();
+    }
+})
+
 router.post('/checkedIn', auth, async (req, res) => {
     if (!req.body.userId) {
         res.status(400).send();
@@ -341,7 +351,7 @@ router.post('/checkedIn', auth, async (req, res) => {
 
     try {
         const response = await db.query("SELECT * FROM users WHERE id = $1", [req.body.userId])
-        res.status(200).send({checkedIn: response.rows[0].checkin});
+        res.status(200).send({checkedIn: (response.rows[0].checkin || response.rows[0].checkin_virtual)});
         return;
     } catch (err) {
         console.log(err);
@@ -357,7 +367,12 @@ router.post('/checkIn', auth, async (req, res) => {
     }
 
     try {
-        await db.query("UPDATE users SET checkin = true WHERE id = $1", [req.body.userId]);
+        if (req.body.virtual) {
+            await db.query("UPDATE users SET checkin_virtual = true WHERE id = $1", [req.body.userId]);
+        }
+        else {
+            await db.query("UPDATE users SET checkin = true WHERE id = $1", [req.body.userId]);
+        }
         res.status(200).send({success: true});
         return;
     } catch (err) {

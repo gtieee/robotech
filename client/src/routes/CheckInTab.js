@@ -26,7 +26,7 @@ class CheckInTab extends React.Component {
 
      async virtualCheckIn() {
         try {
-            await axios.post('/api/users/checkIn', {userId: localStorage.getItem('id'), token: localStorage.getItem('token')});
+            await axios.post('/api/users/checkIn', {userId: localStorage.getItem('id'), token: localStorage.getItem('token'), virtual: true});
             this.setState({checkedIn: true});
             alert('Checked In!');
         } catch {
