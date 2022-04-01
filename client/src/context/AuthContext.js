@@ -31,7 +31,7 @@ export function AuthProvider({ children }) {
     var [rsvp, setRSVP] = useState('none');
 
     const login = async (user, password) => {
-        const response = await axios.post('/api/users/login', {email: user, pass: password});
+        const response = await axios.post('/api/login', {email: user, pass: password});
         if (response.data.token == null) {
             setUser(null);
             setAuthed(false);
