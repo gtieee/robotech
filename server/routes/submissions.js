@@ -1,3 +1,5 @@
+// The logic in this file is not currently used - will probably be replaced with a better system
+
 const express = require('express');
 const admin = require('../middleware/admin.js');
 const fs = require('fs');

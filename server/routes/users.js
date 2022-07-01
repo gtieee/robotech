@@ -6,8 +6,13 @@ const AWS = require('@aws-sdk/client-ses');
 var router = express.Router();
 
 const db = require('../db');
-const { RowDescriptionMessage } = require('pg-protocol/dist/messages');
 
+/**
+ * @route / - Get information about all users
+ * @security - Admin
+ * @request - None
+ * @response Array[Object]
+ */
 router.post('/', admin, async (req, res) => {
     try {
         const data = await db.query("SELECT users.id, users.email, users.first_name, users.last_name, users.apply_id, users.accepted, users.rejected, users.rsvp_in_person, users.rsvp_virtual, users.rsvp_not_attending, applications.school FROM users LEFT JOIN applications ON users.apply_id = applications.id ORDER BY users.last_name;");
@@ -19,6 +24,9 @@ router.post('/', admin, async (req, res) => {
     
 })
 
+/**
+ * 
+ */
 router.post('/stats', admin, async (req, res) => {
     var data = {registered: 0, applied: 0, accepted: 0};
 

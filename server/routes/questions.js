@@ -1,3 +1,5 @@
+// This file is currently unused - probably not planned to ever be used
+
 const express = require('express');
 const bcrypt = require('bcrypt');
 var router = express.Router();

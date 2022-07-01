@@ -4,6 +4,12 @@ const bcrypt = require('bcrypt');
 var router = express.Router();
 const db = require('../db');
 
+/**
+ * @route / - Logs a user in by sending them an auth token and their user id for future requests
+ * @security - None
+ * @request - email: string, pass: string
+ * @response - id: string, token: string, user: string, message: string
+ */
 router.post('/', async (req, res) => {
     const email = req.body.email;
     const pass = req.body.pass;

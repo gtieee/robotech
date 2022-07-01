@@ -5,6 +5,14 @@ var router = express.Router();
 const db = require('../db');
 const AWS= require('@aws-sdk/client-s3');
 
+/**
+ * @route /info - Submits a users application information
+ * @security - User
+ * @request - school: string, age: int, dietary: bool, design: bool, mech: bool, elec: bool, soft: bool, skills: string, interest: string
+ * @response - submitted: bool
+ * @effects - Adds a new row to applications table
+ * @TODO - Should send user a confirmation email
+ */
 router.post('/info', auth, async (req, res) => {
     try {
         if (!req.body.userId) {
@@ -28,6 +36,13 @@ router.post('/info', auth, async (req, res) => {
     
 })
 
+/**
+ * @route /resume - Stores an applicant's resume in S3
+ * @security - User
+ * @request first: string, last: string, userId: string, file: pdf file
+ * @response response: string
+ * @effects - Adds the resume to S3
+ */
 router.post('/resume', auth, async (req, res) => {
     if (!req.body.userId || !req.body.first || !req.body.last) {
         res.status(400).json({response: 'Must send user information'});

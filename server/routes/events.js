@@ -5,6 +5,12 @@ const auth = require('../middleware/auth.js');
 var router = express.Router();
 const db = require('../db');
 
+/**
+ * @route / - returns all events
+ * @security - User
+ * @request - None
+ * @response - Array[Object]
+ */
 router.post('/', auth, async (req, res) => {
     try {
         const response = await db.query('SELECT * FROM events ORDER BY time_order ASC;');

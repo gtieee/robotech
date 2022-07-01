@@ -5,6 +5,13 @@ const AWS = require('@aws-sdk/client-ses');
 var router = express.Router();
 const db = require('../db');
 
+/**
+ * @route /new Registers a new users
+ * @security - None
+ * @request - email: string, pass: string, first: string, last: string
+ * @response - result: bool
+ * @effects - Adds a new row to the users table
+ */
 router.post('/new', async (req, res) => {
     email = req.body.email;
     pass = req.body.pass;
@@ -37,6 +44,13 @@ router.post('/new', async (req, res) => {
     })
 })
 
+/**
+ * @route - Requests a password reset
+ * @security - None
+ * @request - email: string
+ * @response - success: bool
+ * @effects - Alters the resets table, sends an email to user
+ */
 router.post('/requestUpdate', async (req, res) => {
     if (!req.body.email) {
         res.status(400).send({success: false});
@@ -127,6 +141,13 @@ router.post('/requestUpdate', async (req, res) => {
 
 })
 
+/**
+ * @route Resets a user's password
+ * @security - None
+ * @request - email: string, newPass: string, token: string
+ * @response - success: bool, message: string
+ * @effects - Changes user password in users table, sets token to expired in resets table
+ */
 router.post('/update', async (req, res) => {
     if (!(req.body.email && req.body.token && req.body.newPass)) {
         res.status(400).send({success: false});
